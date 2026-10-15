@@ -36,3 +36,7 @@ Configurações contém quatro dificuldades: Aprendiz, Estrategista, Mestre e Or
 - [Integração, evidências e limites](docs/INTEGRACAO-VISUAL-JAVA.md).
 
 As suítes combinatórias históricas permanecem nas branches `qa/exhaustive-java-20261015` e `dev/buraco-arcano-premium`, suspensas conforme orientação do autor. Não são executadas neste workflow. Fontes antigas da alpha foram mantidas no histórico Git para consulta; não são carregadas pela nova mesa.
+
+## Aplicativo Android
+
+A versão local também foi empacotada em APK offline. [Fonte, instalação e verificação do APK](docs/ANDROID.md). O build e os relatórios estão no [GitHub Actions](https://github.com/sergiomrge-tech/Buraco-Arcano/actions/runs/38788473747).
