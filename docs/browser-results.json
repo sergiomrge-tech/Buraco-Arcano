@@ -1,0 +1,53 @@
+{
+  "results": [
+    {
+      "name": "android",
+      "viewport": [
+        412,
+        915
+      ],
+      "checks": [
+        "104 cartas",
+        "toque compra/seleção/descarte",
+        "dificuldade",
+        "retomar save",
+        "3 bots",
+        "lixo aberto",
+        "recarga offline"
+      ]
+    },
+    {
+      "name": "compacto",
+      "viewport": [
+        360,
+        800
+      ],
+      "checks": [
+        "104 cartas",
+        "toque compra/seleção/descarte",
+        "dificuldade",
+        "retomar save",
+        "3 bots",
+        "lixo aberto",
+        "recarga offline"
+      ]
+    },
+    {
+      "name": "desktop",
+      "viewport": [
+        1200,
+        750
+      ],
+      "checks": [
+        "104 cartas",
+        "toque compra/seleção/descarte",
+        "dificuldade",
+        "retomar save",
+        "3 bots",
+        "lixo aberto",
+        "recarga offline"
+      ]
+    }
+  ],
+  "errors": []
+}

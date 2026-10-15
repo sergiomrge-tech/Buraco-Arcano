@@ -4,6 +4,8 @@ Jogo de Buraco aberto para navegador/Android, com mesa vertical de fantasia e re
 
 ## Executar
 
+O motor compilado está incluído em `web/java/engine.js`. Para jogar a versão já construída, basta servir a raiz do repositório com `python3 -m http.server 8000`. Para recompilar o Java e gerar o pacote `dist`:
+
 ```sh
 mvn -f java/pom.xml process-classes -DskipTests
 npm run check
@@ -30,6 +32,7 @@ Configurações contém quatro dificuldades: Aprendiz, Estrategista, Mestre e Or
 - `src/engine.js`: adaptador de apresentação; `src/app.js` e `src/style.css`: UI.
 - `java/src/test/java/com/buracoarcano/ReleaseSmokeTest.java`: verificações rápidas dirigidas.
 - `.github/workflows/release-check.yml`: build e fluxos reais no Chromium com capturas mobile/desktop.
+- [Captura real da mesa no Android](docs/screenshots/android-mesa.png).
 - [Integração, evidências e limites](docs/INTEGRACAO-VISUAL-JAVA.md).
 
 As suítes combinatórias históricas permanecem nas branches `qa/exhaustive-java-20261015` e `dev/buraco-arcano-premium`, suspensas conforme orientação do autor. Não são executadas neste workflow. Fontes antigas da alpha foram mantidas no histórico Git para consulta; não são carregadas pela nova mesa.

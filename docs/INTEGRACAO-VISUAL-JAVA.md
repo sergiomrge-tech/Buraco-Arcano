@@ -32,3 +32,11 @@ Esta integração não deve ser descrita como o projeto completo enquanto online
 ## Evidência real no GitHub
 
 Workflow inicial aprovado: https://github.com/sergiomrge-tech/Buraco-Arcano/actions/runs/38784963677 . Passou compra/seleção/descarte por toque, dificuldade, save, três bots, lixo e recarga offline em 412×915, 360×800 e 1200×750. Sem erros JavaScript. Capturas reais armazenadas no artifact `buraco-arcano-web-e-capturas`. Não equivalem a teste de aparelho Android físico.
+
+Workflow de confirmação aprovado após ajustes visuais: https://github.com/sergiomrge-tech/Buraco-Arcano/actions/runs/38785548524 . Capturas reais: [mesa](screenshots/android-mesa.png), [após três bots](screenshots/android-jogando.png). Relatório estruturado: [browser-results.json](browser-results.json).
+
+Motor compilado do artifact CI é idêntico ao compilado local: SHA256 `89ad4e674c8175d3e87ef899c42ec5c62c6d79a7e15bec819adf838534c904f9`. O bundle é incluído no repositório para permitir servir a raiz diretamente sem instalar Maven.
+
+A versão local foi publicada com sucesso no Site existente. A audiência privada foi preservada.
+
+Cenário adicional de baixa de sete cartas e persistência da canastra aprovado no workflow https://github.com/sergiomrge-tech/Buraco-Arcano/actions/runs/38786376865 . A distribuição foi preparada pelo teste conservando 104 cartas; a compra, seleção, baixa, pontuação e restauração foram executadas na interface e motor reais. [Captura real do cenário automatizado](screenshots/android-canastra-real.png).
