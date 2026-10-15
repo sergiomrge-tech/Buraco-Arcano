@@ -21,7 +21,9 @@ public final class DealAndShuffleTest {
             GameEngine.Card first=g.hands[0].get(0);
             firstSuit[first.suit]++;
             if(i<400){
-                firstTen.add(g.hands[0].subList(0,10).toString()+first.id+g.stock.get(0).id);
+                StringBuilder signature=new StringBuilder();
+                for(int k=0;k<10;k++)signature.append(g.hands[0].get(k).id).append(',');
+                firstTen.add(signature.toString());
                 GameEngine copy=TestSupport.game(seed,"normal");
                 TestSupport.check(copy.stateJson().equals(g.stateJson()),"seed fixa não reproduz distribuição");
             }
