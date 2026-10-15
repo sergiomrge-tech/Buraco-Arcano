@@ -30,6 +30,7 @@ jobs:
           npm run check
           npm run build
           node scripts/prepare-android.mjs
+      - uses: android-actions/setup-android@v3
       - name: Preparar SDK Android
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
       - name: Compilar APK de teste
