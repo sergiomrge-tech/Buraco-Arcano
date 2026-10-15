@@ -1,4 +1,5 @@
-import {BuracoGame,cardName,cardValue,displaySort,isValidRun,meldBonus} from "./engine.js";
+import {BuracoGame} from "./browser-game.js";
+import {cardName,displaySort,isValidRun} from "./engine.js";
 const $=id=>document.getElementById(id);
 const difficultyNames={facil:"Aprendiz · Fácil",normal:"Estrategista · Normal",dificil:"Mestre · Difícil",lendario:"Oráculo · Lendário"};
 let difficulty=localStorage.getItem("buraco-arcano-difficulty")||"normal";
