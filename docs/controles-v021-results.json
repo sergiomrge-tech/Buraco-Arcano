@@ -1,0 +1,32 @@
+{
+  "results": [
+    {
+      "name": "android",
+      "cardHeight": "220px",
+      "checks": [
+        "arraste touch real",
+        "sem seleção ao arrastar",
+        "ordem persistente após recarga",
+        "cancelamento restaura ordem",
+        "toque seleciona",
+        "compra preserva ordem",
+        "descarte e bots preservam 104 cartas"
+      ]
+    },
+    {
+      "name": "compacto",
+      "cardHeight": "220px",
+      "checks": [
+        "arraste touch real",
+        "sem seleção ao arrastar",
+        "ordem persistente após recarga",
+        "cancelamento restaura ordem",
+        "toque seleciona",
+        "compra preserva ordem",
+        "descarte e bots preservam 104 cartas"
+      ]
+    }
+  ],
+  "acrossPages": true,
+  "errors": []
+}

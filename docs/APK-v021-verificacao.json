@@ -1,0 +1,10 @@
+{
+  "file": "Buraco_Arcano_v0.2.1.apk",
+  "bytes": 2048204,
+  "sha256": "8103c9188af62c13418b0fa58111e03cc64a201db5cc511c15bc6a841e53d098",
+  "package": "com.buracoarcano.mobile.preview",
+  "version": "0.2.1",
+  "signature": "V2 OK",
+  "crc": "OK",
+  "verifiedUI": "same app.js and CSS"
+}
