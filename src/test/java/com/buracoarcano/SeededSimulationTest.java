@@ -43,7 +43,11 @@ public final class SeededSimulationTest {
                     } else g.aiPlay(g.player);
                     QaSupport.integrity(g, level + " seed=" + seed + " step=" + step);
                     QaSupport.ok(g.stockEnded || g.player != previousPlayer || !g.phase.equals(previousPhase),
-                        "turno travado seed=" + seed + " step=" + step + " dificuldade=" + level);
+                        "turno travado seed=" + seed + " step=" + step + " dificuldade=" + level +
+                            " hand=" + g.hands[g.player].size() + " deadTaken=" + g.deadTaken[g.player%2] +
+                            " deadPiles=" + (g.deads[0]==null?0:g.deads[0].size()) + "/" +
+                            (g.deads[1]==null?0:g.deads[1].size()) + " stock=" + g.stock.size() +
+                            " last=" + g.message);
                     steps++;
                 } catch (Throwable failure) {
                     throw new AssertionError("SEED REPRODUZÍVEL: level=" + level + " seed=" + seed +
