@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#150f11" />
+  <meta name="description" content="Buraco Arcano — As Quatro Casas. Buraco brasileiro em uma mesa de fantasia." />
+  <title>Buraco Arcano — As Quatro Casas</title>
+  <style>
+:root{color-scheme:dark;--gold:#e2bd76;--gold-dim:#8b6538;--gold-bright:#ffe4a2;--teal:#2e827a;--ink:#0e1518;--ivory:#f3ead6;--red:#c95c59;--wood:#2f1b16}*{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden;background:#0b1013;color:var(--ivory);font-family:Georgia,'Times New Roman',serif}button,select{font:inherit}button{cursor:pointer;touch-action:manipulation}button:focus-visible,[role=button]:focus-visible{outline:3px solid #e9c16c;outline-offset:3px}.game{isolation:isolate;position:relative;min-height:100dvh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;background:radial-gradient(ellipse at 48% 58%,transparent 30%,rgba(0,0,0,.65) 100%),repeating-linear-gradient(105deg,rgba(130,72,36,.07) 0 2px,transparent 3px 13px),linear-gradient(130deg,#170f12,#1a2022 40%,#130e11 90%)}.game:before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 6% 0%,#8d4e2b42,transparent 30%),radial-gradient(circle at 90% 90%,#426c6752,transparent 35%);pointer-events:none}.embers{position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(circle at 13% 22%,#e1b66a8e 0 1px,transparent 3px),radial-gradient(circle at 75% 70%,#b67f4488 0 1px,transparent 3px),radial-gradient(circle at 91% 39%,#a87c5088 0 1px,transparent 4px),radial-gradient(circle at 21% 71%,#ffcb7a66 0 2px,transparent 4px);background-size:210px 180px,330px 240px,310px 220px,450px 370px;animation:embers 20s linear infinite}@keyframes embers{to{background-position:160px -150px,0 -170px,-120px -120px,210px -200px}}
+.topbar{height:83px;min-height:75px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px clamp(15px,2vw,30px);position:relative;z-index:15;border-bottom:2px solid #a27c4933;background:linear-gradient(180deg,#291b19ee 0%,#1a1518eb 70%,#110f14dc 100%);box-shadow:0 7px 22px #0007}.topbar:after{content:'';height:1px;position:absolute;bottom:4px;left:0;right:0;background:linear-gradient(90deg,transparent,#d7ae6280 15%,#e8c483 50%,#d7ae6280 85%,transparent)}.brand{display:flex;align-items:center;gap:14px;white-space:nowrap}.brand-sigil{display:grid;place-items:center;font-size:42px;color:var(--gold);width:52px;height:52px;line-height:1;text-shadow:0 0 12px #d5af6b90;filter:drop-shadow(0 2px 1px #100b08)}.brand-overline{color:#d0ac70;letter-spacing:4.2px;font-size:9px;font-weight:bold}.brand h1{margin:0;color:#edcf91;font-size:clamp(19px,2.2vw,28px);line-height:1.1;letter-spacing:2px;text-shadow:1px 3px 2px #000,0 0 26px #cb8b4340;font-weight:600}.brand h1 em{font-style:normal;color:#fff2c7}.game-stats{display:flex;align-items:center;gap:clamp(8px,2vw,23px);padding:4px clamp(18px,3.5vw,60px);border:1px solid #986e3d91;border-radius:6px;box-shadow:inset 0 0 0 2px #1b1617,inset 0 0 0 3px #6d513480,0 2px 12px #0007;background:linear-gradient(110deg,#1d2927,#25201f 47%,#321c1c);position:absolute;left:50%;transform:translateX(-50%)}.game-stats:before,.game-stats:after{content:'◆';position:absolute;color:#c7a467;font-size:12px;top:50%;transform:translateY(-50%)}.game-stats:before{left:5px}.game-stats:after{right:5px}.stat{display:flex;flex-direction:column;align-items:center;min-width:105px}.stat small{font-size:9px;letter-spacing:1px;color:#d2c7a9;white-space:nowrap}.stat strong{font-size:25px;line-height:1.2;color:#b8e3d0;text-shadow:0 0 15px #48ba9a50;letter-spacing:3px}.stat.rivals strong{color:#ffa9a0}.stat-icon{font-size:23px;color:#4fc2bd}.stat-icon.ruby{color:#cf575d}.score-divider{font-size:16px;color:#a98755}.top-actions{display:flex;align-items:center;gap:9px}.round-btn{width:38px;height:38px;border-radius:50%;border:1px solid #b1935e;color:var(--gold);font-size:19px;background:radial-gradient(circle at 30% 25%,#3d3330,#17191c);box-shadow:inset 0 0 0 2px #302720,0 3px 7px #0009}.button-ornate{padding:12px 19px;border:1px solid #f2cd88;border-radius:4px;background:linear-gradient(180deg,#926331,#66411e 48%,#3f281c);box-shadow:inset 0 0 0 2px #9a713d,0 3px 0 #2c1e1c,0 5px 13px #0008;color:#ffe1a2;font-size:11px;letter-spacing:1.2px;font-weight:bold;text-shadow:1px 1px #170e09;white-space:nowrap}.button-ornate:hover{filter:brightness(1.15)}
+.main{flex:1;min-height:0;display:flex;gap:clamp(11px,1.5vw,25px);padding:clamp(9px,1.2vw,19px) clamp(13px,1.5vw,26px) 16px;max-width:1750px;width:100%;margin:0 auto}.table-wrap{flex:1;min-width:0;position:relative;display:flex;flex-direction:column}.table-border{flex:1;min-height:0;padding:clamp(12px,1.5vw,24px);border:5px solid #664327;border-radius:34px;position:relative;background:repeating-linear-gradient(88deg,transparent 0 31px,#b18b4a18 32px 33px,transparent 34px 110px),radial-gradient(ellipse at 50% 6%,#785338,#2a1b17 66%,#160f12);box-shadow:inset 0 0 0 2px #dfa86e,inset 0 0 0 7px #301b13,inset 0 0 0 10px #7e573d,0 8px 24px #000c,0 0 0 2px #a87a4d}.table-border:before,.table-border:after{content:'❧';position:absolute;z-index:7;color:#e7c47f;text-shadow:0 2px 3px #000;font-size:42px;line-height:1}.table-border:before{top:-14px;left:10px;transform:rotate(-45deg)}.table-border:after{right:10px;bottom:-15px;transform:rotate(135deg)}.table{height:100%;position:relative;overflow:hidden;border-radius:26px;background:radial-gradient(ellipse 75% 72% at 50% 48%,#24534c 0%,#143a36 55%,#0f2427 86%,#08191a 100%);border:3px solid #ba9157;box-shadow:inset 0 0 0 4px #102a27,inset 0 0 0 6px #997146,inset 0 0 55px #000c,0 0 9px #000b}.table:before{content:'';position:absolute;z-index:0;inset:28px;border:2px solid #ad915569;border-radius:50% / 44%;box-shadow:0 0 0 9px #af975116,inset 0 0 0 8px #98844810,0 0 25px #0004;pointer-events:none}.table:after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 42%,#010b0b7b 100%),repeating-linear-gradient(14deg,transparent 0 3px,#f9f8d504 4px 5px,transparent 6px 19px);z-index:0}.table-runes{pointer-events:none;position:absolute;inset:0;color:#dcc39174;display:flex;justify-content:space-between;align-items:center;padding:16px;font-size:25px}.table-runes span:nth-child(odd){align-self:flex-start}.table-runes span:nth-child(even){align-self:flex-end}.table-bottom-rim{height:12px;color:#c7a16a;text-align:center;font-size:22px;line-height:16px;letter-spacing:7px;text-shadow:0 2px 8px #000}
+.player-zone{position:absolute;z-index:3}.north-zone{top:11px;left:50%;transform:translateX(-50%);display:flex;align-items:center;flex-direction:column;gap:5px}.opponent-name{font-weight:bold;text-align:center;letter-spacing:1.5px;color:#f2d79f;font-size:12px;text-shadow:0 2px 2px #000}.opponent-name small{font-size:9px;color:#80c0a8;margin-left:6px}.team-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#39d2b8;box-shadow:0 0 7px #31d0bb}.mini-hand{height:45px;display:flex;justify-content:center;align-items:start;padding-left:21px}.tiny-back{display:block;width:24px;height:36px;margin-left:-10px;border-radius:4px;border:1px solid #e4bc7c;background:linear-gradient(155deg,#34465f,#171e35 60%,#343e5d);box-shadow:0 2px 3px #0007,inset 0 0 0 2px #171b25,inset 0 0 0 3px #9b8460}.tiny-back:after{content:'✥';display:grid;place-items:center;height:100%;font-size:11px;color:#c9af75}.west-zone,.east-zone{display:flex;align-items:center;gap:9px;top:50%;transform:translateY(-50%)}.west-zone{left:10px}.east-zone{right:10px;flex-direction:row-reverse}.avatar{width:clamp(65px,7.3vw,106px);height:clamp(74px,8.5vw,122px);position:relative;z-index:2;border:4px ridge #bc9858;border-radius:48% 48% 35% 35%;box-shadow:0 0 0 2px #372820,0 0 0 4px #d5ac5a9e,0 9px 14px #0009,0 0 20px #b18d4258;overflow:hidden;background:#13272c}.avatar:before{content:'◆';position:absolute;z-index:3;left:50%;top:-9px;transform:translateX(-50%);color:#fff1bc;filter:drop-shadow(0 1px 2px #000)}.portrait{width:100%;height:100%;object-fit:cover}.purple-avatar{border-color:#aa83b5;box-shadow:0 0 0 2px #382238,0 0 0 4px #b98bcb,0 8px 13px #0009,0 0 20px #934fb372}.avatar-level{position:absolute;bottom:0;left:50%;transform:translateX(-50%);min-width:25px;border:1px solid #e3b96b;border-radius:50%;background:#251914;color:#ffdaa0;text-align:center;font-size:11px}.opponent-details{display:flex;flex-direction:column;gap:3px;color:#ead39c;text-shadow:0 2px 2px #000}.opponent-details b{font-size:12px;letter-spacing:1px}.opponent-details>span{font-size:9px;color:#c69e86}.card-count{font-size:10px;color:#e9d7af}.card-count strong{font-size:16px;color:#fff}.small-card-symbol{font-size:19px;color:#d5b77d}.side-hand{position:absolute;top:90%;left:14px;display:flex;width:50px;justify-content:center}.east-zone .side-hand{left:auto;right:14px}.side-hand .tiny-back{width:18px;height:26px;margin-left:-10px}.side-hand .tiny-back:after{font-size:7px}.south-zone{bottom:105px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:10px;color:#f4dcab;letter-spacing:1.2px}.turn-medallion{font-size:16px;color:#ddc07c;filter:drop-shadow(0 0 7px #c5a360)}.hand-tip{color:#b0bcae;letter-spacing:.1px;font-size:10px;margin-left:8px}
+.battlefield{position:absolute;inset:85px 12% 153px;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:space-between;pointer-events:none}.battlefield>*{pointer-events:auto}.meld-lane{height:26%;min-height:37px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}.meld-lane::-webkit-scrollbar{display:none}.empty-lane{font-size:11px;letter-spacing:2px;color:#b4af8a83;border-bottom:1px solid #b9a06830;padding:6px 24px;white-space:nowrap}.score-ribbon{width:min(310px,65%);display:flex;align-items:center;justify-content:center;gap:11px;border-top:1px solid #b8975e6a;border-bottom:1px solid #b8975e6a;background:linear-gradient(90deg,transparent,#192c29dd 15% 85%,transparent);font-size:9px;letter-spacing:1.5px;color:#d6c59d;white-space:nowrap;padding:4px 10px}.score-ribbon .counter{font-weight:bold;font-size:13px}.gem{font-size:13px}.gem.red{color:#d97574}.gem.blue{color:#75cbce}.central-plinth{height:43%;width:100%;min-height:90px;display:flex;justify-content:center;align-items:center;gap:clamp(17px,3.2vw,58px);position:relative}.center-ornament{width:clamp(88px,11vw,150px);aspect-ratio:1;opacity:.6;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;pointer-events:none}.center-ornament svg{width:100%;height:100%}.pile-area{width:clamp(59px,6vw,90px);text-align:center}.stack-holder{width:100%;height:clamp(88px,10vw,128px);position:relative;cursor:pointer;transition:transform .16s}.stack-holder:hover:not(.disabled){transform:translateY(-5px)}.stack-holder:focus-visible{outline:2px solid #f7d391}.stack-holder:before,.stack-holder:after{content:'';position:absolute;width:91%;height:87%;top:1px;left:7%;border:1px solid #f6d99e8f;border-radius:6px;background:#4a302a;transform:rotate(5deg)}.stack-holder:after{transform:rotate(-4deg);left:0;top:2px}.stack-holder.disabled{opacity:.65;cursor:default}.pile-label{font-size:10px;letter-spacing:2px;color:#e1cc9a;text-shadow:0 2px 2px #000;padding-top:7px}.pile-label strong{color:#fff;font-size:12px}.playing-card{position:relative;width:clamp(61px,6.2vw,91px);height:clamp(90px,9.1vw,133px);border-radius:7px;border:2px solid #e9dfca;background:#f5eddb;box-shadow:0 3px 4px #0009,0 0 0 1px #4f3824;color:#201c24;overflow:hidden;user-select:none;touch-action:manipulation}.deck-card{position:absolute;inset:0;width:100%;height:100%;z-index:3;border:3px solid #c49c65;border-radius:7px;background:repeating-linear-gradient(45deg,transparent 0 8px,#e9b97717 8px 10px,transparent 10px 18px),radial-gradient(circle,#3d6771,#20263d 57%,#191729)}.card-back-design{display:flex;align-items:center;justify-content:center;flex-direction:column;position:absolute;inset:5px;border:2px solid #c7ad74;border-radius:4px;box-shadow:inset 0 0 0 2px #263a40,inset 0 0 0 3px #c1a16983}.card-back-design i{font-size:23px;font-style:normal;color:#e3c98a}.card-back-design span{font-size:26px;color:#fff0b2;text-shadow:0 0 12px #edc67b}.blank-card{position:absolute;z-index:4;inset:0;width:100%;height:100%;background:linear-gradient(125deg,#efe2c2,#fffaf0 40%,#e3cfaa);border-color:#fff6de}.card-red{color:#ac313b}.card-black{color:#292937}.card-face{width:100%;height:100%;padding:4px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;background:radial-gradient(ellipse at 50% 40%,#fffef6,#f7f0de 75%,#d0b891);border:1px solid #b8a281;border-radius:4px}.card-rank{font-size:clamp(14px,1.4vw,20px);font-weight:900;align-self:flex-start;line-height:.9}.card-suit{font-size:clamp(25px,2.7vw,41px);line-height:1;filter:drop-shadow(0 1px #fff)}.card-small{font-size:clamp(10px,1.3vw,16px);align-self:flex-end;transform:rotate(180deg);line-height:.9}.card-corner-ornament{position:absolute;width:8px;height:8px;border:1px solid #c4ae81;top:4px;right:4px;border-left:none;border-bottom:none}.card-corner-ornament.second{top:auto;right:auto;left:4px;bottom:4px;transform:rotate(180deg)}.meld-stack{position:relative;display:flex;min-width:85px;height:100%;align-items:center;cursor:pointer;padding-right:15px;transition:filter .2s}.meld-stack:hover{filter:brightness(1.18)}.meld-stack .playing-card{position:relative;width:clamp(35px,4.4vw,60px);height:clamp(52px,6.5vw,87px);margin-left:-33px;flex:0 0 auto}.meld-stack .playing-card:first-child{margin-left:0}.meld-stack .card-face{padding:2px}.meld-stack .card-rank{font-size:12px}.meld-stack .card-suit{font-size:24px}.meld-stack .card-small{font-size:10px}.meld-badge{position:absolute;right:0;bottom:-2px;z-index:5;border:1px solid #f2d18a;background:#183a36;color:#fff2ad;padding:2px 6px;border-radius:9px;font-size:8px;white-space:nowrap}.meld-badge.dirty{background:#5b2b25}.meld-stack.compatible{filter:drop-shadow(0 0 10px #87f1d2)}
+.player-hand{position:absolute;z-index:7;left:50%;bottom:0;transform:translateX(-50%);height:126px;width:calc(100% - 16px);display:flex;align-items:flex-end;justify-content:center;pointer-events:none;padding:0 24px 8px;overflow:visible}.hand-card{cursor:pointer;pointer-events:auto;position:relative;flex:0 0 auto;margin-left:clamp(-29px,-2.0vw,-11px);width:clamp(57px,5.1vw,77px);height:clamp(84px,7.5vw,114px);transform:translateY(var(--arc,0px)) rotate(var(--tilt,0deg));transform-origin:50% 120%;transition:transform .18s ease,filter .18s ease;filter:drop-shadow(0 2px 2px #0008)}.hand-card:first-child{margin-left:0}.hand-card:hover,.hand-card:focus-visible{transform:translateY(calc(var(--arc,0px) - 19px)) rotate(0deg) scale(1.07);z-index:11;filter:drop-shadow(0 0 12px #d5be74)}.hand-card.selected{transform:translateY(calc(var(--arc,0px) - 31px)) rotate(0deg) scale(1.05);z-index:12;filter:drop-shadow(0 0 11px #6bf4ca)}.hand-card.selected:after{content:'';position:absolute;inset:-3px;border:3px solid #81e9c1;border-radius:9px;pointer-events:none}.hand-card .card-rank{font-size:19px}.hand-card .card-suit{font-size:32px}.hand-card .card-small{font-size:13px}.phase-badge{position:absolute;z-index:7;right:19px;bottom:118px;padding:6px 13px;border:1px solid #dfb56b;border-radius:3px;color:#ffde9a;font-size:10px;font-weight:bold;letter-spacing:2px;background:linear-gradient(110deg,#705022,#31261d);box-shadow:0 2px 13px #0007;animation:glow 3s ease infinite}.phase-badge.waiting{color:#b0c4ca;border-color:#456c6e;animation:none;background:#1e3437}@keyframes glow{50%{box-shadow:0 0 12px #f3c67f6c,0 1px 5px #000b}}
+.side-console{position:relative;width:clamp(208px,20vw,275px);flex:0 0 auto;border:2px solid #9d794a;border-radius:9px;background:linear-gradient(175deg,#2d2523,#1b2527 51%,#171a20);box-shadow:inset 0 0 0 4px #10181a,inset 0 0 0 5px #594730,0 6px 23px #000b;display:flex;flex-direction:column;overflow:hidden}.side-console:before,.side-console:after{content:'✧';position:absolute;color:#c8ab6c;font-size:27px;z-index:5}.side-console:before{top:-9px;left:2px}.side-console:after{bottom:-12px;right:2px}.console-heading{margin:9px 10px 0;background:linear-gradient(90deg,#362723,#4a3828,#352625);padding:13px 5px;text-align:center;border:1px solid #896b48;box-shadow:inset 0 0 0 2px #1e1b1b;font-size:13px;letter-spacing:1.7px;color:#ffe4ad;font-weight:bold;white-space:nowrap}.console-heading span{color:#c4a261;margin:0 4px}.console-section{padding:11px 15px;border-bottom:1px solid #82634066}.console-section>small{display:block;font-size:10px;letter-spacing:1.5px;color:#bca57c;font-weight:bold}.round-section{text-align:center}.round-section>strong{color:#ffdfaa;font-size:27px;text-shadow:0 0 9px #dc9a4b77}.rule-divider{margin:6px 4px 9px;height:1px;background:linear-gradient(90deg,transparent,#c19e68,transparent)}.dead-row{display:flex;justify-content:space-around;gap:8px;margin-top:7px}.dead-counter{display:flex;flex-direction:column;align-items:center;min-width:65px}.dead-counter .mini-deck{color:#dbbb83;font-size:20px;line-height:.9}.dead-counter b{font-size:16px;color:#e7c998}.dead-counter small{font-size:8px;color:#d5c5a4;letter-spacing:1px}.controls-section{display:flex;flex-direction:column;gap:7px}.controls-section>small{margin-bottom:4px}.game-action{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:10px 5px;border-radius:4px;border:1px solid #b9905f;color:#ebd3a2;letter-spacing:1px;font-size:10px;font-weight:bold;background:linear-gradient(180deg,#49403a,#2c2b2b);text-shadow:0 1px #000;box-shadow:inset 0 0 0 1px #090d0f80,0 2px 1px #0006;transition:filter .18s,transform .18s}.game-action:hover:not(:disabled){filter:brightness(1.22)}.game-action:active:not(:disabled){transform:translateY(2px)}.game-action:disabled{opacity:.38;cursor:default}.game-action>span{font-size:16px;line-height:1;color:#f1d399}.action-gold{background:linear-gradient(180deg,#a3783f,#6b4b2d 45%,#4e321f);border-color:#f4cb7b;color:#fff2cb}.action-emerald{background:linear-gradient(180deg,#337e71,#23574e 54%,#14362f);border-color:#62c4ab;color:#eaffed}.action-plain{background:#272c30;border-color:#74654c;font-size:9px}.log-section{flex:1;min-height:80px;overflow:hidden}.log-section p{font-family:Georgia,serif;font-size:12px;line-height:1.4;margin:8px 0;color:#dbd2bc}.console-footer{font-size:9px;letter-spacing:1.3px;color:#9a875f;text-align:center;padding:9px 4px;margin-top:auto}.toast{position:absolute;z-index:99;left:50%;top:90px;transform:translateX(-50%) translateY(-12px);border:1px solid #ddbd72;border-radius:6px;padding:13px 23px;color:#ffe9ad;background:linear-gradient(150deg,#31302b,#121c1d);box-shadow:0 7px 25px #000e;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;font-size:13px;max-width:90vw;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.bottom-disclaimer{position:absolute;bottom:1px;right:15px;font-size:8px;letter-spacing:1.3px;color:#c1a97888}.dialog{width:min(460px,calc(100vw - 32px));max-height:calc(100dvh - 45px);border:2px solid #d0aa70;border-radius:12px;padding:24px;background:linear-gradient(160deg,#343033,#161e23);color:#e7d7bb;box-shadow:inset 0 0 0 5px #1b2426,0 20px 85px #000d}.dialog::backdrop{background:#060a0cba;backdrop-filter:blur(5px)}.modal-head{display:flex;align-items:center;gap:12px;border-bottom:1px solid #b69a625e;padding-bottom:12px;margin-bottom:14px}.modal-head>span{font-size:32px;color:#e4bf7e}.modal-head h2{font-size:20px;color:#f5dcab;margin:0;flex:1}.close-modal{border:1px solid #a78d62;background:#302b26;color:#f3d6a3;border-radius:6px;font-size:22px;width:34px;height:34px}.dialog p{font-size:14px;line-height:1.6;color:#e4dac4}.dialog label:not(.checkbox-line){display:block;font-size:11px;letter-spacing:1.7px;color:#e5c488;margin:15px 0 8px}.dialog select{appearance:none;width:100%;padding:13px;border:1px solid #a08c6d;background:#171d21;color:#e9ddc3;border-radius:6px;font-size:13px}.checkbox-line{display:flex;align-items:center;gap:10px;margin:18px 0;font-size:13px}.checkbox-line input{accent-color:#51a18e}.modal-button{width:100%;margin-top:8px}.end-dialog{text-align:center}.end-dialog h2{text-align:left}
+@media (max-width:1250px){.stat-icon{display:none}.game-stats{padding:4px 20px;gap:8px}.brand-overline{letter-spacing:2px}.topbar{height:73px}.main{gap:11px;padding:10px 10px 12px}.side-console{width:208px}.table-border{padding:11px}.table:before{inset:20px}.west-zone .opponent-details,.east-zone .opponent-details{display:none}.south-zone{bottom:95px}.player-hand{height:111px}.battlefield{inset:77px 10% 129px}.avatar{width:67px;height:78px}.pile-area{width:60px}.stack-holder{height:91px}.playing-card{width:59px;height:89px}.central-plinth{gap:38px}.console-heading{font-size:11px}.console-section{padding:8px 10px}.game-action{padding:8px 3px}.controls-section{gap:6px}}
+@media (max-width:1024px) and (orientation:landscape){.topbar{height:43px;min-height:43px;padding:2px 10px}.brand{gap:6px}.brand-sigil{width:30px;height:30px;font-size:29px}.brand-overline{font-size:6px;letter-spacing:1px}.brand h1{font-size:14px;letter-spacing:1px}.game-stats{padding:1px 14px}.stat{min-width:72px}.stat small{font-size:6px}.stat strong{font-size:15px;letter-spacing:1px}.score-divider{font-size:9px}.top-actions{gap:4px}.round-btn{height:27px;width:27px;font-size:15px}.top-actions .button-ornate{padding:7px 8px;font-size:8px}.main{gap:7px;padding:5px 8px 7px}.side-console{width:158px}.console-heading{margin:4px 5px 0;padding:6px 1px;font-size:8px;letter-spacing:.5px}.console-heading span{margin:0 1px}.round-section{display:flex;flex-wrap:wrap;justify-content:space-around;align-items:center;gap:2px}.round-section>strong{font-size:16px}.rule-divider{display:none}.round-section>small{font-size:8px}.dead-row{flex:1;gap:0;margin:0}.dead-counter{min-width:31px}.dead-counter .mini-deck{display:none}.dead-counter b{font-size:12px}.dead-counter small{font-size:6px}.console-section{padding:5px 7px}.controls-section{gap:3px}.controls-section>small{margin-bottom:0;font-size:7px}.game-action{padding:5px 2px;font-size:7px;letter-spacing:0}.game-action>span{font-size:11px}.action-plain{font-size:7px}.log-section{min-height:27px}.log-section>small{font-size:7px}.log-section p{font-size:8px;margin:2px 0;line-height:1.2}.console-footer{font-size:6px;padding:5px 0;letter-spacing:.4px}.table-border{padding:7px;border-width:3px;border-radius:15px}.table{border-radius:13px}.table:before{inset:11px}.table-border:before,.table-border:after{font-size:23px}.table-bottom-rim{height:4px;font-size:13px;line-height:8px}.north-zone{top:3px;gap:0}.opponent-name{font-size:8px}.opponent-name small{font-size:7px}.mini-hand{height:22px}.tiny-back{height:20px;width:14px;margin-left:-7px;border-radius:2px}.tiny-back:after{font-size:6px}.west-zone{left:3px}.east-zone{right:3px}.avatar{height:49px;width:43px;border-width:2px}.avatar-level{font-size:7px}.side-hand{display:none}.battlefield{inset:37px 9% 69px}.meld-lane{min-height:25px}.meld-stack{min-width:58px;padding-right:4px}.meld-stack .playing-card{width:29px;height:43px;margin-left:-19px;border-width:1px;border-radius:3px}.meld-stack .card-rank{font-size:8px}.meld-stack .card-suit{font-size:15px}.meld-stack .card-small{font-size:7px}.score-ribbon{font-size:6px;padding:2px;gap:4px}.score-ribbon .counter{font-size:8px}.empty-lane{font-size:7px;letter-spacing:1px;padding:0 5px}.central-plinth{gap:24px;min-height:48px}.pile-area{width:38px}.stack-holder{height:49px}.playing-card{width:36px;height:51px;border-width:1px;border-radius:4px}.card-face{padding:2px}.card-rank{font-size:10px}.card-suit{font-size:18px}.card-small{font-size:8px}.card-back-design{inset:2px}.card-back-design i{font-size:10px}.card-back-design span{font-size:13px}.pile-label{font-size:6px;letter-spacing:0;padding-top:2px}.pile-label strong{font-size:7px}.center-ornament{width:80px}.south-zone{bottom:48px;font-size:7px;gap:3px}.south-zone .hand-tip{display:none}.player-hand{height:66px;padding:0 9px 2px}.hand-card{width:clamp(34px,4.3vw,43px);height:clamp(48px,6.1vw,61px);margin-left:-10px}.hand-card .card-rank{font-size:11px}.hand-card .card-suit{font-size:20px}.hand-card .card-small{font-size:9px}.phase-badge{bottom:55px;right:8px;padding:3px 5px;font-size:6px;letter-spacing:.4px}.bottom-disclaimer{display:none}}
+@media (orientation:portrait) and (max-width:750px){.topbar{height:57px;min-height:57px;padding:3px 9px}.brand{gap:3px}.brand-sigil{font-size:26px;width:30px}.brand-overline{font-size:7px;letter-spacing:1px}.brand h1{font-size:15px}.game-stats{position:absolute;top:57px;left:50%;z-index:8;padding:4px 13px}.stat{min-width:70px}.stat small{font-size:6px}.stat strong{font-size:16px}.score-divider{font-size:9px}.top-actions{gap:3px}.round-btn{width:27px;height:27px;font-size:14px}.top-actions .button-ornate{font-size:8px;padding:7px}.main{flex-direction:column;gap:4px;padding:35px 5px 17px}.table-wrap{flex:1;min-height:0}.table-border{padding:7px;border-width:3px;border-radius:15px}.table{border-radius:12px}.table:before{inset:13px}.table-border:before,.table-border:after{font-size:22px}.table-bottom-rim{height:3px;font-size:12px;line-height:5px}.side-console{height:157px;width:100%;flex:none;display:grid;grid-template-columns:100px 1fr 111px;grid-template-rows:31px 1fr;gap:0}.console-heading{grid-column:1/4;margin:3px 5px 1px;padding:4px;font-size:9px}.round-section{grid-column:1;grid-row:2;padding:3px;border-right:1px solid #564a31}.round-section>small{font-size:7px}.round-section>strong{font-size:15px;display:block}.rule-divider{margin:2px}.dead-row{margin-top:2px;gap:0}.dead-counter{min-width:36px}.dead-counter .mini-deck{display:none}.dead-counter b{font-size:11px}.dead-counter small{font-size:6px}.controls-section{grid-column:2;grid-row:2;display:grid;grid-template-columns:repeat(2,1fr);gap:4px;padding:3px}.controls-section>small{display:none}.game-action{font-size:8px;padding:4px 2px;letter-spacing:0;gap:2px}.game-action>span{font-size:12px}.controls-section #hintBtn{grid-column:1/3}.log-section{grid-column:3;grid-row:2;padding:4px;border-left:1px solid #564a31;min-height:0}.log-section>small{font-size:8px;letter-spacing:0}.log-section p{font-size:10px;margin:4px 0;line-height:1.2}.console-footer{display:none}.north-zone{top:7px}.opponent-name{font-size:9px}.opponent-name small{font-size:7px}.mini-hand{height:31px}.tiny-back{height:27px;width:18px;margin-left:-9px}.west-zone{left:3px}.east-zone{right:3px}.avatar{width:37px;height:47px;border-width:2px}.avatar-level{font-size:7px}.opponent-details,.side-hand{display:none}.battlefield{inset:66px 10% 128px}.score-ribbon{font-size:6px;gap:3px;padding:2px}.score-ribbon .counter{font-size:8px}.meld-lane{min-height:35px}.meld-stack .playing-card{width:28px;height:42px;margin-left:-19px;border-width:1px}.meld-stack{min-width:50px}.meld-stack .card-rank{font-size:8px}.meld-stack .card-suit{font-size:15px}.meld-stack .card-small{font-size:7px}.empty-lane{font-size:6px;letter-spacing:1px;padding:5px 4px}.central-plinth{gap:29px;min-height:72px}.pile-area{width:42px}.stack-holder{height:66px}.playing-card{width:42px;height:63px;border-width:1px}.card-back-design{inset:3px}.card-back-design i{font-size:14px}.card-back-design span{font-size:18px}.card-rank{font-size:13px}.card-suit{font-size:23px}.card-small{font-size:9px}.pile-label{font-size:7px;letter-spacing:0;padding-top:3px}.pile-label strong{font-size:8px}.center-ornament{width:95px}.south-zone{bottom:90px;font-size:8px;gap:3px}.south-zone .hand-tip{display:none}.player-hand{height:102px;padding:0 10px 5px}.hand-card{width:clamp(38px,9vw,56px);height:clamp(56px,13.3vw,83px);margin-left:clamp(-24px,-4vw,-13px)}.hand-card .card-rank{font-size:13px}.hand-card .card-suit{font-size:25px}.hand-card .card-small{font-size:10px}.phase-badge{bottom:103px;right:8px;font-size:7px;letter-spacing:0;padding:3px 6px}.bottom-disclaimer{display:none}}
+@media (max-height:440px) and (min-width:860px){.topbar{height:49px;min-height:49px}.main{padding:5px 9px 8px}.battlefield{inset:46px 10% 94px}.north-zone{top:4px}.south-zone{bottom:67px}.player-hand{height:79px}.hand-card{width:44px;height:67px;margin-left:-13px}.hand-card .card-rank{font-size:13px}.hand-card .card-suit{font-size:24px}.hand-card .card-small{font-size:10px}.phase-badge{bottom:82px}.console-section{padding:5px 10px}.controls-section{gap:4px}.game-action{padding:5px}.console-heading{padding:7px}.meld-stack .playing-card{width:35px;height:48px;margin-left:-24px}.meld-stack .card-rank{font-size:10px}.meld-stack .card-suit{font-size:18px}.meld-stack .card-small{font-size:8px}.central-plinth{min-height:65px}.stack-holder{height:73px}.pile-area{width:48px}.playing-card{width:48px;height:73px}.score-ribbon{padding:2px;font-size:7px}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+.player-hand{bottom:14px}
+@media (max-width:1024px) and (orientation:landscape){.player-hand{bottom:10px}}
+@media (orientation:portrait) and (max-width:750px){.player-hand{bottom:12px}}
+
+</style>
+
+</head>
+<body>
+<div id="game" class="game">
+  <div class="embers" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-sigil">✥</span>
+      <div><span class="brand-overline">AS QUATRO CASAS</span><h1>BURACO <em>ARCANO</em></h1></div>
+    </div>
+    <div class="game-stats">
+      <span class="stat-icon">❖</span><div class="stat"><small>CASA DA AURORA</small><strong id="allyScore">0000</strong></div>
+      <span class="score-divider">×</span><div class="stat rivals"><small>CASA DAS SOMBRAS</small><strong id="enemyScore">0000</strong></div><span class="stat-icon ruby">❖</span>
+    </div>
+    <div class="top-actions">
+      <button id="soundBtn" class="round-btn" aria-label="Alternar som" title="Alternar som">♪</button>
+      <button id="settingsBtn" class="round-btn" aria-label="Configurações" title="Configurações">⚙</button>
+      <button id="newBtn" class="button-ornate" title="Nova partida">NOVA PARTIDA</button>
+    </div>
+  </header>
+  <main class="main">
+    <div class="table-wrap">
+      <div class="table-border">
+        <div class="table">
+          <div class="table-runes" aria-hidden="true"><span>✧</span><span>✧</span><span>✧</span><span>✧</span></div>
+          <div class="north-zone player-zone" id="northZone">
+            <div class="opponent-name"><span class="team-dot ally"></span> ELYRA <small>ALIADA · MÍSTICA</small></div>
+            <div class="mini-hand" id="northHand" aria-label="Cartas da sua parceira"></div>
+          </div>
+          <div class="west-zone player-zone" id="westZone">
+            <div class="avatar gold-avatar">
+              <svg viewBox="0 0 116 128" class="portrait" role="img" aria-label="Retrato de Darion, guerreiro">
+                <defs><linearGradient id="westBg" x2="1" y2="1"><stop stop-color="#2a3d3f"/><stop offset="1" stop-color="#08191f"/></linearGradient><linearGradient id="westMetal"><stop stop-color="#e7c581"/><stop offset=".5" stop-color="#715037"/><stop offset="1" stop-color="#d7b372"/></linearGradient></defs>
+                <path fill="url(#westBg)" d="M0 0h116v128H0z"/><path fill="#111b27" d="M8 128Q12 75 42 77L74 76Q110 90 113 128Z"/><path fill="url(#westMetal)" d="M15 120L31 82L52 74L78 79L99 120L79 128H35Z"/><path fill="#424b53" d="M38 99L59 87L81 99L70 128H48Z"/><path fill="#d4a889" d="M35 42Q33 21 58 19Q85 22 82 51L77 74Q58 91 39 72Z"/><path fill="#3f302c" d="M30 49Q19 14 58 10Q91 6 88 45L78 39L72 26L41 35Z"/><path fill="#29333b" d="M30 28L41 11L58 3L78 12L89 30L82 39H35Z"/><path fill="url(#westMetal)" d="M57 4L61 29L54 40L43 35L29 40L34 24L45 15Z M70 12L83 24L88 40L74 37L65 30Z"/><path fill="#efce8b" d="M33 43L22 58L35 65L44 55L37 45Z M80 43L94 58L82 64L74 56Z"/><path fill="#352822" d="M41 50H52L47 53Z M65 50H77L71 53Z"/><path fill="#543e34" d="M53 61L63 61L58 67Z"/><path fill="#bf9569" d="M49 72Q59 78 69 72L66 80L53 81Z"/>
+              </svg><span class="avatar-level">12</span>
+            </div>
+            <div class="opponent-details"><b>DARION</b><span>CASA RUBRA</span><div class="card-count"><span class="small-card-symbol">▣</span><strong id="westCount">11</strong> cartas</div></div>
+            <div class="side-hand" id="westHand" aria-label="Cartas de Darion"></div>
+          </div>
+          <div class="east-zone player-zone" id="eastZone">
+            <div class="avatar purple-avatar">
+              <svg viewBox="0 0 116 128" class="portrait" role="img" aria-label="Retrato de Morwen, feiticeira">
+                <defs><linearGradient id="eastBg" x2="1" y2="1"><stop stop-color="#564360"/><stop offset="1" stop-color="#130f24"/></linearGradient><linearGradient id="eastCape" x2="0" y2="1"><stop stop-color="#8971ae"/><stop offset="1" stop-color="#1e1c45"/></linearGradient></defs>
+                <path fill="url(#eastBg)" d="M0 0h116v128H0z"/><path fill="url(#eastCape)" d="M0 128Q9 59 30 22Q58 -19 90 23Q114 70 116 128Z"/><path fill="#e8c4ad" d="M42 32Q60 16 76 34L80 62Q75 87 60 92Q42 80 37 58Z"/><path fill="#251f36" d="M40 59Q28 34 45 17Q60 8 77 22Q90 35 81 60Q69 42 59 27Q53 45 38 49Z"/><path fill="#e4bb83" d="M32 45Q54 29 59 12Q65 39 87 46L77 23L59 5L41 19Z"/><path fill="#604381" d="M25 102Q41 78 46 81L60 91L74 79Q90 81 104 123L12 128Z"/><path fill="#dcb6ee" d="M44 53L53 53L50 57L44 56Z M65 53L76 52L71 57L65 56Z"/><path fill="#9b6974" d="M51 71Q61 75 68 70Q59 78 51 71Z"/><path fill="#b393d1" d="M58 86L50 102L59 123L70 101Z"/><path stroke="#d0acef" stroke-width="2" fill="none" d="M21 116Q35 96 47 96M70 95Q90 96 97 113"/>
+              </svg><span class="avatar-level">12</span>
+            </div>
+            <div class="opponent-details"><b>MORWEN</b><span>CASA VIOLETA</span><div class="card-count"><span class="small-card-symbol">▣</span><strong id="eastCount">11</strong> cartas</div></div>
+            <div class="side-hand" id="eastHand" aria-label="Cartas de Morwen"></div>
+          </div>
+          <section class="battlefield" aria-label="Área central do jogo">
+            <div class="score-ribbon enemy-ribbon"><span class="gem red">◆</span><span>CANASTRAS ADVERSÁRIAS</span><span id="enemyCanastras" class="counter">0</span></div>
+            <div class="meld-lane enemy-melds" id="enemyMelds" aria-label="Jogadas da equipe adversária"><p class="empty-lane">SEQUÊNCIAS DOS RIVAIS</p></div>
+            <div class="central-plinth">
+              <div class="pile-area"><div id="stockPile" class="stack-holder" role="button" tabindex="0" aria-label="Comprar carta do monte"><div class="playing-card card-back deck-card"><div class="card-back-design"><i>✧</i><span>✥</span></div></div><div class="pile-label">MONTE <strong id="stockCount">38</strong></div></div></div>
+              <div class="center-ornament" aria-hidden="true"><svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="52" stroke="#bfac69" stroke-width="1" fill="none" opacity=".35"/><circle cx="75" cy="75" r="43" stroke="#bfac69" stroke-width="1" fill="none" stroke-dasharray="2 6" opacity=".6"/><path d="M75 13L89 61L137 75L89 89L75 137L61 89L13 75L61 61Z" fill="none" stroke="#b5a76a" stroke-width="2" opacity=".5"/><circle cx="75" cy="75" r="14" fill="#182d2a" stroke="#c9b774" stroke-width="2"/><path d="M75 59L82 75L75 91L68 75Z" fill="#c9b774"/></svg></div>
+              <div class="pile-area"><div id="discardPile" class="stack-holder" role="button" tabindex="0" aria-label="Pegar todas as cartas do lixo"><div id="discardFace" class="playing-card blank-card"></div><div class="pile-label">LIXO <strong id="discardCount">1</strong></div></div></div>
+            </div>
+            <div class="meld-lane ally-melds" id="allyMelds" aria-label="Jogadas da sua equipe"><p class="empty-lane">SUAS SEQUÊNCIAS</p></div>
+            <div class="score-ribbon ally-ribbon"><span class="gem blue">◆</span><span>CANASTRAS DA AURORA</span><span id="allyCanastras" class="counter">0</span></div>
+          </section>
+          <div class="south-zone player-zone" id="southZone"><span class="turn-medallion">✦</span><span class="south-name">VOCÊ · GUARDIÃO DA AURORA</span><span class="hand-tip" id="handTip">Selecione cartas para formar sequências</span></div>
+          <div id="hand" class="player-hand" aria-label="Suas cartas"></div>
+          <div id="phaseBadge" class="phase-badge" aria-live="polite">SUA VEZ</div>
+        </div>
+      </div>
+      <div class="table-bottom-rim" aria-hidden="true"><span>❧</span> ❖ <span>❧</span></div>
+    </div>
+    <aside class="side-console">
+      <div class="console-heading"><span>✦</span> MESA DE JOGO <span>✦</span></div>
+      <div class="console-section round-section"><small>RODADA</small><strong id="roundLabel">01</strong><div class="rule-divider"></div><small>MORTOS</small><div class="dead-row"><div class="dead-counter"><span class="mini-deck">▣</span><b id="allyDead">11</b><small>AURORA</small></div><div class="dead-counter"><span class="mini-deck">▣</span><b id="enemyDead">11</b><small>SOMBRAS</small></div></div></div>
+      <div class="console-section controls-section"><small>AÇÕES</small>
+        <button id="drawBtn" class="game-action action-gold"><span>✥</span> COMPRAR DO MONTE</button>
+        <button id="takeBtn" class="game-action action-secondary"><span>♧</span> PEGAR O LIXO</button>
+        <button id="meldBtn" class="game-action action-emerald"><span>✦</span> BAIXAR SELEÇÃO</button>
+        <button id="discardBtn" class="game-action action-secondary"><span>♠</span> DESCARTAR CARTA</button>
+        <button id="hintBtn" class="game-action action-plain"><span>?</span> SUGESTÃO DE JOGADA</button>
+      </div>
+      <div class="console-section log-section"><small>DIÁRIO DA MESA</small><p id="message">Bem-vindo ao Buraco Arcano.</p></div>
+      <footer class="console-footer">✧ &nbsp; O DESTINO ESTÁ NAS CARTAS &nbsp; ✧</footer>
+    </aside>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="settingsDialog" class="dialog"><div class="modal-head"><span>✥</span><h2>Configurações da mesa</h2><button class="close-modal" data-close aria-label="Fechar">×</button></div><p>Ajuste a inteligência dos adversários e de sua parceira. A alteração vale também para a partida atual.</p><label for="botDifficulty">DIFICULDADE DOS BOTS</label><select id="botDifficulty"><option value="facil">Fácil — jogadas básicas e imprevisíveis</option><option value="normal">Normal — reconhece sequências</option><option value="dificil">Difícil — gerencia canastras e lixo</option><option value="especialista">Especialista — avalia risco e pontuação</option></select><label class="checkbox-line"><input type="checkbox" id="soundCheckbox" checked /> Sons da mesa e efeitos</label><button id="settingsSave" class="button-ornate modal-button">SALVAR PREFERÊNCIAS</button></dialog>
+  <dialog id="endDialog" class="dialog end-dialog"><div class="modal-head"><span>✥</span><h2 id="endTitle">Fim de rodada</h2></div><p id="endText"></p><button id="playAgain" class="button-ornate modal-button">JOGAR NOVAMENTE</button></dialog>
+  <div class="bottom-disclaimer">BURACO ABERTO · 2 DUPLAS · 104 CARTAS · OFFLINE</div>
+</div>
+<script>
+// Buraco Arcano — game engine; no DOM dependencies.
+const SUITS = ['♠','♥','♣','♦'];
+const SUIT_NAMES = ['espadas','copas','paus','ouros'];
+const RANK_NAMES = {1:'A',11:'J',12:'Q',13:'K'};
+const DIFFICULTIES = ['facil','normal','dificil','especialista'];
+const TEAM_OF = [0,1,0,1];
+const cardLabel = c => `${RANK_NAMES[c.rank]||c.rank}${SUITS[c.suit]}`;
+const cardPoints = c => c.rank===1 ? 15 : c.rank<=7 ? 5 : 10;
+const isWild = c => c.rank===2;
+const cardSort = (a,b) => a.suit-b.suit || a.rank-b.rank || a.id.localeCompare(b.id);
+
+function secureInt(limit, randomWords) {
+  if (!Number.isSafeInteger(limit) || limit<1) throw new RangeError('invalid bound');
+  // Rejection sampling prevents modulo bias. Browser crypto is mandatory in live play.
+  const range = 0x100000000;
+  const threshold = range - range % limit;
+  let value;
+  do { value = randomWords()[0]; } while(value>=threshold);
+  return value % limit;
+}
+function secureShuffle(input, randomWords = () => {
+  if (!globalThis.crypto?.getRandomValues) throw new Error('Secure random generator unavailable');
+  return globalThis.crypto.getRandomValues(new Uint32Array(1));
+}) {
+  const result = [...input];
+  for(let i=result.length-1;i>0;i--){
+    const j=secureInt(i+1,randomWords);
+    [result[i],result[j]]=[result[j],result[i]];
+  }
+  return result;
+}
+function makeDeck() {
+  const cards=[];
+  for(let deck=0;deck<2;deck++) for(let suit=0;suit<4;suit++) for(let rank=1;rank<=13;rank++)
+    cards.push({id:`${deck}-${suit}-${rank}`,deck,suit,rank});
+  return cards;
+}
+const teamFor = seat => TEAM_OF[seat];
+
+function runEvaluation(cards, wildIndex, aceHigh, suit) {
+  const naturals=cards.filter((c,i)=>i!==wildIndex);
+  if(naturals.some(c=>c.suit!==suit)) return null;
+  const values=naturals.map(c=>c.rank===1 && aceHigh?14:c.rank).sort((a,b)=>a-b);
+  if(new Set(values).size!==values.length) return null;
+  if(!values.length) return null;
+  const isWildUsed=wildIndex!==-1;
+  if(isWildUsed && cards[wildIndex].rank!==2) return null;
+  if(isWildUsed && values.length<2) return null;
+  let gaps=0;
+  for(let i=1;i<values.length;i++) gaps+=values[i]-values[i-1]-1;
+  if(gaps<0 || gaps>(isWildUsed?1:0)) return null;
+  if(!isWildUsed && gaps!==0) return null;
+  const low=values[0], high=values[values.length-1];
+  if(isWildUsed && gaps===0 && low<=2 && high>=13) return null;
+  if(isWildUsed && gaps===0 && low===1 && high===13) return null;
+  if(cards.length>13) return null;
+  if(high>14 || low<1) return null;
+  // No wrapping King to 2; a single wildcard can extend a contiguous run.
+  return {suit,wild:isWildUsed,clean:!isWildUsed,length:cards.length,low,high,gaps,
+    canastra:cards.length>=7 ? (isWildUsed?'suja':'limpa') : null};
+}
+function meldInfo(cards) {
+  if(!Array.isArray(cards) || cards.length<3) return null;
+  if(new Set(cards.map(c=>c.id)).size!==cards.length) return null;
+  const candidates=[];
+  for(const suit of [0,1,2,3]) for(const highAce of [false,true]) {
+    const positions=[-1,...cards.map((c,i)=>c.rank===2?i:-1).filter(i=>i>=0)];
+    for(const wildIndex of positions){
+      // A natural 2 only belongs to its own suit; wildcard can be any 2.
+      const value=runEvaluation(cards,wildIndex,highAce,suit);
+      if(value) candidates.push(value);
+    }
+  }
+  candidates.sort((a,b)=>Number(a.wild)-Number(b.wild) || a.low-b.low);
+  return candidates[0]||null;
+}
+function findMeldCandidates(hand,maxResults=30) {
+  // Exact subset enumeration (3..7 cards). Used on small hands only.
+  const found=[];
+  const cards=[...hand];
+  for(let suit=0;suit<4;suit++) {
+    const suited=cards.filter(c=>c.suit===suit && c.rank!==2);
+    const twos=cards.filter(c=>c.rank===2);
+    for(const aceHigh of [false,true]){
+      const arranged=suited.map(c=>({...c,_v:c.rank===1&&aceHigh?14:c.rank})).sort((a,b)=>a._v-b._v);
+      for(let i=0;i<arranged.length;i++) {
+        const run=[arranged[i]];
+        for(let j=i+1;j<arranged.length && run.length<12;j++) {
+          if(arranged[j]._v===run[run.length-1]._v) continue;
+          if(arranged[j]._v>run[run.length-1]._v+2) break;
+          run.push(arranged[j]);
+          const clean=run.map(c=>cards.find(x=>x.id===c.id));
+          if(clean.length>=3 && meldInfo(clean)) found.push({cards:clean,info:meldInfo(clean)});
+          if(twos.length && clean.length>=2) {
+            const extra=[...clean,twos.find(t=>!clean.some(x=>x.id===t.id))].filter(Boolean);
+            const info=meldInfo(extra);
+            if(info) found.push({cards:extra,info});
+          }
+        }
+      }
+    }
+  }
+  return [...new Map(found.map(f=>[f.cards.map(c=>c.id).sort().join(','),f])).values()]
+    .sort((a,b)=>b.cards.length-a.cards.length||Number(a.info.wild)-Number(b.info.wild)).slice(0,maxResults);
+}
+function scoreTeam(melds, handCards, tookDead, wentOut=false) {
+  let sum=0;
+  for(const m of melds){
+    sum+=m.reduce((n,c)=>n+cardPoints(c),0);
+    const info=meldInfo(m);
+    if(info?.canastra==='limpa') sum+=200;
+    else if(info?.canastra==='suja') sum+=100;
+  }
+  sum-=handCards.reduce((n,c)=>n+cardPoints(c),0);
+  if(!tookDead)sum-=100;
+  if(wentOut) sum+=100;
+  return sum;
+}
+function newGame(difficulty='normal') {
+  const shuffled=secureShuffle(makeDeck());
+  const hands=[[],[],[],[]];
+  for(let n=0;n<11;n++) for(let seat=0;seat<4;seat++)hands[seat].push(shuffled.pop());
+  const dead=[[],[]];
+  for(let n=0;n<11;n++) for(let t=0;t<2;t++)dead[t].push(shuffled.pop());
+  const discard=[shuffled.pop()];
+  hands.forEach(h=>h.sort(cardSort));
+  return {hands,dead,deadTaken:[false,false],stock:shuffled,discard,melds:[[],[]],
+    current:0,phase:'draw',turn:1,round:1,score:[0,0],gameOver:false,winner:null,
+    difficulty:DIFFICULTIES.includes(difficulty)?difficulty:'normal',lastMove:'As cartas foram distribuídas. Sua vez!',
+    history:['Uma nova partida começou.'],botThinking:false};
+}
+function assertCards(state) {
+  const all=[...state.hands.flat(),...state.dead.flat(),...state.stock,...state.discard,...state.melds.flat(2)];
+  if(all.length!==104)throw new Error(`Card conservation violated: ${all.length} instead of 104`);
+  if(new Set(all.map(c=>c.id)).size!==104)throw new Error('Duplicated card IDs');
+  return true;
+}
+function drawStock(s, seat) {
+  if(s.gameOver || s.current!==seat || s.phase!=='draw')return false;
+  if(!s.stock.length){endRound(s,null,'O monte acabou.');return true;}
+  s.hands[seat].push(s.stock.pop());s.hands[seat].sort(cardSort);
+  s.phase='play';s.lastMove=`${seat===0?'Você':'Jogador '+(seat+1)} comprou do monte.`;
+  return true;
+}
+function takeDiscard(s, seat) {
+  if(s.gameOver || s.current!==seat || s.phase!=='draw'|| !s.discard.length)return false;
+  s.hands[seat].push(...s.discard.splice(0));s.hands[seat].sort(cardSort);
+  s.phase='play';s.lastMove=seat===0?'Você pegou o lixo.':'Um oponente pegou o lixo.';
+  return true;
+}
+function layMeld(s, seat, ids, meldIndex=null) {
+  if(s.gameOver || s.current!==seat || s.phase!=='play')return false;
+  const idsUnique=new Set(ids);if(idsUnique.size!==ids.length || !ids.length)return false;
+  const h=s.hands[seat];const chosen=ids.map(id=>h.find(c=>c.id===id));
+  if(chosen.some(c=>!c))return false;
+  const team=teamFor(seat);
+  const target=meldIndex==null?[]:s.melds[team][meldIndex];
+  if(meldIndex!=null&&!target)return false;
+  const combined=[...target,...chosen];const info=meldInfo(combined);
+  if(!info)return false;
+  s.hands[seat]=h.filter(c=>!idsUnique.has(c.id));
+  if(meldIndex==null)s.melds[team].push(combined);else s.melds[team][meldIndex]=combined;
+  s.lastMove=`${seat===0?'Você':'Jogador '+(seat+1)} ${meldIndex==null?'baixou':'ampliou'} uma sequência${info.canastra?' — canastra '+info.canastra:''}.`;
+  if(s.hands[seat].length===0)emptyHand(s,seat,false);
+  return true;
+}
+function emptyHand(s,seat,byDiscard){
+  const t=teamFor(seat);
+  if(!s.deadTaken[t] && s.dead[t].length) {
+    s.hands[seat].push(...s.dead[t].splice(0));s.hands[seat].sort(cardSort);
+    s.deadTaken[t]=true;
+    s.lastMove += ' O morto foi conquistado!';
+    if(byDiscard)s.phase='end';
+  } else if(s.melds[t].some(m=>meldInfo(m)?.canastra)) {
+    endRound(s,t,'Batida!');
+  } else {
+    // Without a canastra, an empty hand is not a legal batida.
+    s.lastMove+=' É necessária uma canastra para bater.';
+  }
+}
+function discardCard(s,seat,id) {
+  if(s.gameOver||s.current!==seat||s.phase!=='play')return false;
+  const index=s.hands[seat].findIndex(c=>c.id===id);
+  if(index<0)return false;
+  const [card]=s.hands[seat].splice(index,1);s.discard.push(card);
+  s.lastMove=`${seat===0?'Você':'Jogador '+(seat+1)} descartou ${cardLabel(card)}.`;
+  if(!s.hands[seat].length)emptyHand(s,seat,true);
+  if(!s.gameOver)nextTurn(s);
+  return true;
+}
+function nextTurn(s){s.current=(s.current+1)%4;s.phase='draw';s.turn++;s.history.push(s.lastMove);if(s.history.length>12)s.history.shift();}
+function endRound(s,winningTeam=null,reason='Rodada encerrada.') {
+  if(s.gameOver)return;
+  const points=[0,1].map(team=>scoreTeam(s.melds[team],s.hands.filter((_,seat)=>teamFor(seat)===team).flat(),s.deadTaken[team],team===winningTeam));
+  s.score[0]+=points[0];s.score[1]+=points[1];s.gameOver=true;
+  s.winner=winningTeam===null?(points[0]===points[1]?null:Number(points[1]>points[0])):winningTeam;
+  s.phase='finished';s.lastMove=`${reason} Casas da Aurora: ${points[0]} pontos; Casas das Sombras: ${points[1]} pontos.`;
+}
+const valueOfCard = c => cardPoints(c) + (c.rank===2?9:0) + (c.rank===1?3:0);
+function formationPotential(h){
+  let score=0;
+  for(const c of h)for(const d of h)if(c.id!==d.id){
+    if(c.suit===d.suit && Math.abs(c.rank-d.rank)===1) score+=6;
+    if(c.suit===d.suit && Math.abs(c.rank-d.rank)===2) score+=2;
+  }
+  return score;
+}
+function chooseBotDraw(s,seat,difficulty=s.difficulty) {
+  if(!s.discard.length)return 'stock';
+  const hand=s.hands[seat],top=s.discard[s.discard.length-1];
+  if(difficulty==='facil')return Math.random()<.15?'discard':'stock';
+  const groups=[...hand,...s.discard];
+  const helpful=!!findMeldCandidates(groups,100).find(x=>x.cards.some(c=>c.id===top.id));
+  if(difficulty==='normal')return helpful && s.discard.length<=2?'discard':'stock';
+  const future=formationPotential(groups)-formationPotential(hand);
+  const topUseful=s.melds[teamFor(seat)].some(m=>meldInfo([...m,top]));
+  if(difficulty==='dificil')return (topUseful || helpful && future>5)?'discard':'stock';
+  // Expert avoids bloating their hand unless discard enables meaningful meld(s).
+  const canPlay=topUseful || helpful;
+  const deadNeeded=!s.deadTaken[teamFor(seat)];
+  return canPlay && (s.discard.length<=4 || future>s.discard.length*(deadNeeded?5:3))?'discard':'stock';
+}
+function chooseBotDiscard(s,seat,difficulty=s.difficulty) {
+  const hand=s.hands[seat];
+  if(!hand.length)return null;
+  const scoreCandidate=c=>{
+    const remaining=hand.filter(x=>x.id!==c.id);
+    let score=valueOfCard(c);
+    if(difficulty==='normal')score-=formationPotential(remaining)*.12;
+    if(difficulty==='dificil'||difficulty==='especialista'){
+      score+=formationPotential(remaining)*.45;
+      if(c.rank===2)score-=45;
+      for(const m of s.melds[teamFor(seat)])if(meldInfo([...m,c]))score-=35;
+      if(difficulty==='especialista'){
+        const opponents=s.hands.filter((_,p)=>teamFor(p)!==teamFor(seat));
+        const urgent=opponents.some(h=>h.length<=3);
+        if(urgent && c.rank<=7)score+=10;
+      }
+    }
+    return score;
+  };
+  if(difficulty==='facil')return hand[Math.floor(Math.random()*hand.length)].id;
+  return [...hand].sort((a,b)=>scoreCandidate(b)-scoreCandidate(a))[0].id;
+}
+function botTurn(s,seat=s.current) {
+  if(seat===0||s.current!==seat||s.gameOver)return false;
+  if(s.phase==='draw') {
+    if(chooseBotDraw(s,seat)==='discard')takeDiscard(s,seat);else drawStock(s,seat);
+  }
+  if(s.gameOver)return true;
+  if(s.phase!=='play')return false;
+  const skill=DIFFICULTIES.indexOf(s.difficulty);
+  let budget=skill===0?1:skill===1?2:skill===2?5:8;
+  while(budget-->0&&!s.gameOver&&s.phase==='play') {
+    let played=false;
+    for(const card of [...s.hands[seat]]) {
+      for(let i=0;i<s.melds[teamFor(seat)].length;i++){
+        if(meldInfo([...s.melds[teamFor(seat)][i],card]) && (skill>0 || Math.random()<.25)) {
+          played=layMeld(s,seat,[card.id],i);break;
+        }
+      }
+      if(played)break;
+    }
+    if(played)continue;
+    const options=findMeldCandidates(s.hands[seat],100);
+    const plan=options.sort((a,b)=>{
+      const qa=a.cards.length*10 + (a.info.clean?4:0) + (a.info.canastra?40:0);
+      const qb=b.cards.length*10 + (b.info.clean?4:0) + (b.info.canastra?40:0);
+      return qb-qa;
+    })[0];
+    if(plan && (skill>0||Math.random()<.38)){
+      played=layMeld(s,seat,plan.cards.map(c=>c.id));
+    }
+    if(!played)break;
+  }
+  if(!s.gameOver && s.phase==='play')discardCard(s,seat,chooseBotDiscard(s,seat));
+  return true;
+}
+function hintForHuman(s) {
+  if(s.current!==0||s.gameOver)return null;
+  if(s.phase==='draw')return 'Compre do monte ou pegue todas as cartas do lixo.';
+  for(const c of s.hands[0]) for(let i=0;i<s.melds[0].length;i++)if(meldInfo([...s.melds[0][i],c]))
+    return {text:`Você pode adicionar ${cardLabel(c)} a uma sequência da sua dupla.`,ids:[c.id],meldIndex:i};
+  const candidates=findMeldCandidates(s.hands[0]);
+  if(candidates.length)return {text:'Existe uma sequência que você pode baixar.',ids:candidates[0].cards.map(c=>c.id),meldIndex:null};
+  return {text:'Não há sequência pronta. Descarte uma carta para encerrar a vez.',ids:[],meldIndex:null};
+}
+
+
+const $=id=>document.getElementById(id);
+const el={hand:$('hand'),stock:$('stockPile'),discard:$('discardPile'),discardFace:$('discardFace'),enemy:$('enemyMelds'),ally:$('allyMelds'),toast:$('toast'),message:$('message'),phase:$('phaseBadge'),settings:$('settingsDialog'),end:$('endDialog'),difficulty:$('botDifficulty')};
+const safeStore={get(key,fallback){try{return localStorage.getItem(key)||fallback}catch{return fallback}},set(key,value){try{localStorage.setItem(key,value)}catch{}}};
+let s=newGame(safeStore.get('buracoDifficulty','normal'));
+let selected=new Set();let botTimer=0;let toastTimer=0;let sound=safeStore.get('buracoSound','on')!=='off';let audio;
+
+function cardFace(c,classes='') {
+  const red=[1,3].includes(c.suit);
+  const suits=['♠','♥','♣','♦'];
+  return `<div class="playing-card card-${red?'red':'black'} ${classes}" data-card-id="${c.id}" aria-label="${cardLabel(c)}"><div class="card-face"><strong class="card-rank">${({1:'A',11:'J',12:'Q',13:'K'})[c.rank]||c.rank}<span>${suits[c.suit]}</span></strong><span class="card-suit">${suits[c.suit]}</span><strong class="card-small">${({1:'A',11:'J',12:'Q',13:'K'})[c.rank]||c.rank} ${suits[c.suit]}</strong></div><i class="card-corner-ornament"></i><i class="card-corner-ornament second"></i></div>`;
+}
+function tinyBacks(count,limit=11){return Array.from({length:Math.min(count,limit)},()=>'<span class="tiny-back" aria-hidden="true"></span>').join('')}
+function countCanastras(team){return s.melds[team].filter(m=>meldInfo(m)?.canastra).length}
+function renderMelds(team,host) {
+  const lines=s.melds[team];
+  if(!lines.length){host.innerHTML=`<p class="empty-lane">${team===0?'SUAS SEQUÊNCIAS':'SEQUÊNCIAS DOS RIVAIS'}</p>`;return;}
+  host.innerHTML=lines.map((cards,index)=>{
+    const info=meldInfo(cards);const eligible=team===0&&s.current===0&&s.phase==='play'&&selected.size&&meldInfo([...cards,...s.hands[0].filter(c=>selected.has(c.id))]);
+    return `<div class="meld-stack ${eligible?'compatible':''}" data-team="${team}" data-meld="${index}" title="${team===0?'Toque para acrescentar cartas selecionadas':'Sequência adversária'}" role="${team===0?'button':'group'}" tabindex="${team===0?'0':'-1'}">${[...cards].sort(cardSort).map(c=>cardFace(c)).join('')}${info?.canastra?`<span class="meld-badge ${info.canastra==='suja'?'dirty':''}">${info.canastra==='limpa'?'✦ LIMPA':'◆ SUJA'}</span>`:''}</div>`;
+  }).join('');
+}
+function renderHand(){
+  const hand=s.hands[0];const n=hand.length;
+  const shrink=n>14 ? Math.max(-40,-Math.round((n-11)*2.7)-20) : null;
+  el.hand.innerHTML=hand.map((c,i)=>{
+    const position=i-(n-1)/2;
+    const tilt=Math.max(-10,Math.min(10,position*1.25));
+    const arc=Math.min(12,Math.pow(position/(Math.max(n-1,1)/2),2)*9);
+    return `<button type="button" class="playing-card hand-card card-${[1,3].includes(c.suit)?'red':'black'} ${selected.has(c.id)?'selected':''}" data-id="${c.id}" aria-pressed="${selected.has(c.id)}" title="${cardLabel(c)}" style="--tilt:${tilt}deg;--arc:${arc}px;${shrink!==null?`margin-left:${i===0?0:shrink}px;`:''}"><div class="card-face"><strong class="card-rank">${({1:'A',11:'J',12:'Q',13:'K'})[c.rank]||c.rank}<span>${['♠','♥','♣','♦'][c.suit]}</span></strong><span class="card-suit">${['♠','♥','♣','♦'][c.suit]}</span><strong class="card-small">${({1:'A',11:'J',12:'Q',13:'K'})[c.rank]||c.rank} ${['♠','♥','♣','♦'][c.suit]}</strong></div></button>`;
+  }).join('');
+}
+function render(){
+  if(s.gameOver&&el.end.open===false){showEnd()}
+  $('allyScore').textContent=String(s.score[0]).padStart(4,'0');$('enemyScore').textContent=String(s.score[1]).padStart(4,'0');
+  $('westCount').textContent=s.hands[3].length;
+  $('eastCount').textContent=s.hands[1].length;
+  $('northHand').innerHTML=tinyBacks(s.hands[2].length);
+  $('westHand').innerHTML=tinyBacks(s.hands[3].length,5);
+  $('eastHand').innerHTML=tinyBacks(s.hands[1].length,5);
+  $('stockCount').textContent=s.stock.length;$('discardCount').textContent=s.discard.length;
+  $('allyDead').textContent=s.dead[0].length;$('enemyDead').textContent=s.dead[1].length;
+  $('allyCanastras').textContent=countCanastras(0);$('enemyCanastras').textContent=countCanastras(1);
+  $('roundLabel').textContent=String(s.round).padStart(2,'0');
+  el.message.textContent=s.lastMove;
+  if(s.discard.length){el.discardFace.outerHTML=cardFace(s.discard.at(-1),'blank-card').replace('class="playing-card','id="discardFace" class="playing-card');el.discardFace=$('discardFace')}else{el.discardFace.innerHTML='';}
+  const isHuman=s.current===0&&!s.gameOver;
+  el.phase.textContent=s.gameOver?'FIM DA RODADA':isHuman?'SUA VEZ':`${['','MORWEN','ELYRA','DARION'][s.current]} JOGA`;
+  el.phase.classList.toggle('waiting',!isHuman);
+  ['drawBtn','takeBtn'].forEach(id=>$(id).disabled=!isHuman||s.phase!=='draw');
+  $('takeBtn').disabled||=s.discard.length===0;
+  $('meldBtn').disabled=!isHuman||s.phase!=='play'||selected.size<1;
+  $('discardBtn').disabled=!isHuman||s.phase!=='play'||selected.size!==1;
+  $('hintBtn').disabled=!isHuman;
+  el.stock.classList.toggle('disabled',!isHuman||s.phase!=='draw');
+  el.discard.classList.toggle('disabled',!isHuman||s.phase!=='draw');
+  $('handTip').textContent=s.phase==='draw'?'Compre do monte ou pegue o lixo':selected.size?`${selected.size} carta(s) selecionada(s)`:'Selecione cartas para formar sequências';
+  renderMelds(1,el.enemy);renderMelds(0,el.ally);renderHand();
+  // Deliberate invariant check on every UI render; catches lost cards immediately.
+  assertCards(s);
+}
+function toast(message){clearTimeout(toastTimer);el.toast.textContent=message;el.toast.classList.add('show');toastTimer=setTimeout(()=>el.toast.classList.remove('show'),3000)}
+function playSound(type){if(!sound)return;try{audio??=new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const osc=audio.createOscillator();const gain=audio.createGain();const now=audio.currentTime;osc.type=type==='meld'?'triangle':'sine';osc.frequency.setValueAtTime(type==='fail'?190:type==='meld'?690:380,now);osc.frequency.exponentialRampToValueAtTime(type==='meld'?980:type==='fail'?130:440,now+.11);gain.gain.setValueAtTime(.065,now);gain.gain.exponentialRampToValueAtTime(.001,now+.15);osc.connect(gain).connect(audio.destination);osc.start(now);osc.stop(now+.16)}catch{}}
+function safeAction(action,error){if(s.current!==0||s.gameOver){toast('Aguarde sua vez.');return}const success=action();if(!success){toast(error||'Jogada inválida.');playSound('fail');return}playSound('ok');selected.clear();render();queueBots()}
+function queueBots(){clearTimeout(botTimer);if(!s.gameOver && s.current!==0){botTimer=setTimeout(()=>{try{botTurn(s);render();queueBots()}catch(e){console.error(e);toast('Erro de lógica: '+e.message)}},640)}}
+$('drawBtn').addEventListener('click',()=>safeAction(()=>drawStock(s,0),'Você já comprou nesta rodada.'));
+$('takeBtn').addEventListener('click',()=>safeAction(()=>takeDiscard(s,0),'Não é possível pegar o lixo agora.'));
+function doMeld(index=null){if(!selected.size){toast('Selecione pelo menos três cartas para uma nova sequência.');return}safeAction(()=>layMeld(s,0,[...selected],index),'Sequência inválida: use 3 ou mais cartas consecutivas do mesmo naipe (até um curinga 2).');playSound('meld')}
+$('meldBtn').addEventListener('click',()=>doMeld());
+$('discardBtn').addEventListener('click',()=>{if(selected.size!==1){toast('Escolha exatamente uma carta para descartar.');return}safeAction(()=>discardCard(s,0,[...selected][0]),'Selecione uma carta da sua mão.')});
+$('hintBtn').addEventListener('click',()=>{const hint=hintForHuman(s);if(!hint)return;if(typeof hint==='string'){toast(hint);return}selected=new Set(hint.ids);render();toast(hint.text)});
+el.stock.addEventListener('click',()=>$('drawBtn').click());el.discard.addEventListener('click',()=>$('takeBtn').click());
+for(const e of [el.stock,el.discard])e.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();e.click()}});
+el.hand.addEventListener('click',event=>{const button=event.target.closest('[data-id]');if(!button||s.current!==0||s.phase!=='play')return;const id=button.dataset.id;if(selected.has(id))selected.delete(id);else selected.add(id);render();playSound('ok')});
+for(const lane of [el.ally,el.enemy])lane.addEventListener('click',event=>{const meld=event.target.closest('[data-meld]');if(!meld||meld.dataset.team!=='0'||!selected.size)return;doMeld(Number(meld.dataset.meld))});
+el.ally.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){const target=event.target.closest('[data-meld]');if(target){event.preventDefault();doMeld(Number(target.dataset.meld))}}});
+function reset(){clearTimeout(botTimer);selected.clear();if(el.end.open)el.end.close();s=newGame(el.difficulty.value);render();toast('Nova partida! Baralho embaralhado com aleatoriedade criptográfica.')}
+$('newBtn').addEventListener('click',reset);$('playAgain').addEventListener('click',reset);
+$('settingsBtn').addEventListener('click',()=>el.settings.showModal());
+for(const btn of document.querySelectorAll('[data-close]'))btn.addEventListener('click',()=>el.settings.close());
+$('settingsSave').addEventListener('click',()=>{const d=el.difficulty.value;if(DIFFICULTIES.includes(d)){s.difficulty=d;safeStore.set('buracoDifficulty',d)}sound=$('soundCheckbox').checked;safeStore.set('buracoSound',sound?'on':'off');$('soundBtn').textContent=sound?'♪':'♩';el.settings.close();toast('Preferências aplicadas à partida atual.');render()});
+$('soundBtn').addEventListener('click',()=>{sound=!sound;$('soundCheckbox').checked=sound;$('soundBtn').textContent=sound?'♪':'♩';safeStore.set('buracoSound',sound?'on':'off')});
+function showEnd(){$('endTitle').textContent=s.winner===0?'Vitória da Aurora!':s.winner===1?'As Sombras venceram':'A rodada terminou';$('endText').textContent=s.lastMove;el.end.showModal()}
+window.__buraco={getState:()=>s,reset,select:ids=>{selected=new Set(ids);render()},playBots:()=>{while(!s.gameOver&&s.current!==0)botTurn(s);render()}};
+el.difficulty.value=s.difficulty;$('soundCheckbox').checked=sound;$('soundBtn').textContent=sound?'♪':'♩';render();
+</script>
+</body>
+</html>
