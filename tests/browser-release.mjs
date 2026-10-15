@@ -32,7 +32,7 @@ try {
    const remaining=ids.filter(id=>!run.includes(id));const take=n=>remaining.splice(0,n);
    const hand=[...run,...take(4)],others=[take(11),take(11),take(11)],deads=[take(11),take(11)],trash=take(1);
    const checkpoint=['BA1|1|0|draw|normal|0|0|0|0|0|-1|-',hand.join(','),...others.map(v=>v.join(',')),...deads.map(v=>v.join(',')),remaining.join(','),trash.join(','),'',''].join('\n');
-   await page.evaluate(checkpoint=>localStorage.setItem('buraco-arcano-java-v2',JSON.stringify({game:{checkpoint},settings:{reduced:true}})),checkpoint);
+   await page.addInitScript(checkpoint=>{if(!sessionStorage.getItem('fixtureLoaded')){sessionStorage.setItem('fixtureLoaded','1');localStorage.setItem('buraco-arcano-java-v2',JSON.stringify({game:{checkpoint},settings:{reduced:true}}));}},checkpoint);
    await page.reload();await page.locator('#hand [data-id]').first().waitFor();await page.locator('#stock').tap();
    for(const id of run)await page.locator(`[data-id="${id}"]`).evaluate(el=>el.click());
    await page.locator('#action').tap();assert.equal(await page.locator('#melds .playing-card').count(),7);
