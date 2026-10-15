@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const difficultyNames={facil:"Aprendiz · Fácil",normal:"Estrategista · Normal",dificil:"Mestre · Difícil",lendario:"Oráculo · Lendário"};
 let difficulty=localStorage.getItem("buraco-arcano-difficulty")||"normal";
 if(!difficultyNames[difficulty])difficulty="normal";
-let game=new JavaBuracoGame(difficulty),selected=new Set(),thinking=false,paused=false;
+let game=new BuracoGame(difficulty),selected=new Set(),thinking=false,paused=false;
 const portraits=[
   {a:"#274c69",b:"#58bba6",skin:"#dbad83",hair:"#684233",cape:"#bb7139",orn:"#d8d58d",gender:0},
   {a:"#2a1b44",b:"#884972",skin:"#c29a7e",hair:"#c9c9e2",cape:"#462a5f",orn:"#d7c0ff",gender:1},
@@ -117,7 +117,7 @@ function showSettings(){
  '<button id="new-game-btn" class="action-btn action-gold">✦ SALVAR E INICIAR NOVA PARTIDA</button>');
  $("new-game-btn").addEventListener("click",()=>{
    difficulty=$("difficulty").value;localStorage.setItem("buraco-arcano-difficulty",difficulty);
-   game=new JavaBuracoGame(difficulty);selected.clear();thinking=false;hideModal();
+   game=new BuracoGame(difficulty);selected.clear();thinking=false;hideModal();
  });
 }
 function showEndIfNeeded(){
@@ -130,7 +130,7 @@ function showEndIfNeeded(){
  (matchDone?'<p style="text-align:center">O torneio terminou! Uma das casas alcançou os 3.000 pontos.</p>':'<p style="text-align:center">O duelo continua até uma casa alcançar 3.000 pontos.</p>')+
  '<button id="next-round-btn" class="action-btn action-gold">'+(matchDone?"NOVA PARTIDA":"PRÓXIMA RODADA")+'</button>');
  $("next-round-btn").addEventListener("click",()=>{
-   if(matchDone)game=new JavaBuracoGame(difficulty);else game.startRound();
+   if(matchDone)game=new BuracoGame(difficulty);else game.startRound();
    selected.clear();thinking=false;hideModal();
  });
 }
