@@ -110,7 +110,9 @@ public final class GameEngine {
             for(Card c:cards) {
                 if(c.rank==2) {jokers.add(c);continue;}
                 int rank=c.rank;
-                if(rank==1&&start+n-1==14&&start>1)rank=14;
+                // Permite dois Ases físicos distintos no jogo completo A..A (14 cartas).
+                // Em sequências parciais altas, Ás ocupa a posição 14.
+                if(rank==1&&start+n-1==14&&(start>1||ordered[0]!=null))rank=14;
                 int pos=rank-start;
                 if(pos<0||pos>=n||ordered[pos]!=null) {invalid=true;break;}
                 ordered[pos]=c;
