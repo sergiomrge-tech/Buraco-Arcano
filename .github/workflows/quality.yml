@@ -8,7 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -21,17 +21,15 @@ jobs:
           node-version: "22"
       - name: Compilar motor Java para navegador usando TeaVM
         run: mvn -B -ntp package -DskipTests
-      - name: Testar motor Java real sem navegador
-        run: java -cp target/test-classes:target/classes com.buracoarcano.GameEngineSmoke
-      - name: Testes combinatorios exaustivos e simulacoes por dificuldade
-        run: java -Dburaco.qaSeed=20261015 -Dburaco.fuzzGames=48 -cp target/test-classes:target/classes com.buracoarcano.CombinatorialQa
-      - name: Publicar catalogo de cada caso validado
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: qa-casos-individuais-java
-          path: reports/qa-combinatorio.csv
-          if-no-files-found: ignore
+      - name: QA Java em categorias individuais (com relatorio)
+        run: |
+          mkdir -p qa-reports
+          set -o pipefail
+          for suite in GameEngineSmoke ExhaustiveSequencesTest ActionsMatrixTest ScoringAndEndgameTest SeededSimulationTest; do
+            echo "====== $suite ======" | tee -a qa-reports/resultados.txt
+            java -cp target/test-classes:target/classes com.buracoarcano.$suite 30 180 2>&1 | tee -a qa-reports/resultados.txt
+          done
+          echo "SHA: ${GITHUB_SHA}" | tee -a qa-reports/resultados.txt
       - name: Testar regras JS anteriores como regressão
         run: npm test
       - name: Instalar navegador para captura real
@@ -52,6 +50,13 @@ jobs:
           name: jogo-web-java
           path: dist/
           if-no-files-found: error
+      - name: Publicar relatórios detalhados por categoria
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-java-relatorios
+          path: qa-reports/
+          if-no-files-found: ignore
       - name: Publicar capturas REAIS para inspeção
         if: always()
         uses: actions/upload-artifact@v4
