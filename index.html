@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#150f11" />
+  <meta name="description" content="Buraco Arcano — As Quatro Casas. Buraco brasileiro em uma mesa de fantasia." />
+  <title>Buraco Arcano — As Quatro Casas</title>
+  <link rel="stylesheet" href="./src/styles.css" />
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+</head>
+<body>
+<div id="game" class="game">
+  <div class="embers" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-sigil">✥</span>
+      <div><span class="brand-overline">AS QUATRO CASAS</span><h1>BURACO <em>ARCANO</em></h1></div>
+    </div>
+    <div class="game-stats">
+      <span class="stat-icon">❖</span><div class="stat"><small>CASA DA AURORA</small><strong id="allyScore">0000</strong></div>
+      <span class="score-divider">×</span><div class="stat rivals"><small>CASA DAS SOMBRAS</small><strong id="enemyScore">0000</strong></div><span class="stat-icon ruby">❖</span>
+    </div>
+    <div class="top-actions">
+      <button id="soundBtn" class="round-btn" aria-label="Alternar som" title="Alternar som">♪</button>
+      <button id="settingsBtn" class="round-btn" aria-label="Configurações" title="Configurações">⚙</button>
+      <button id="newBtn" class="button-ornate" title="Nova partida">NOVA PARTIDA</button>
+    </div>
+  </header>
+  <main class="main">
+    <div class="table-wrap">
+      <div class="table-border">
+        <div class="table">
+          <div class="table-runes" aria-hidden="true"><span>✧</span><span>✧</span><span>✧</span><span>✧</span></div>
+          <div class="north-zone player-zone" id="northZone">
+            <div class="opponent-name"><span class="team-dot ally"></span> ELYRA <small>ALIADA · MÍSTICA</small></div>
+            <div class="mini-hand" id="northHand" aria-label="Cartas da sua parceira"></div>
+          </div>
+          <div class="west-zone player-zone" id="westZone">
+            <div class="avatar gold-avatar">
+              <svg viewBox="0 0 116 128" class="portrait" role="img" aria-label="Retrato de Darion, guerreiro">
+                <defs><linearGradient id="westBg" x2="1" y2="1"><stop stop-color="#2a3d3f"/><stop offset="1" stop-color="#08191f"/></linearGradient><linearGradient id="westMetal"><stop stop-color="#e7c581"/><stop offset=".5" stop-color="#715037"/><stop offset="1" stop-color="#d7b372"/></linearGradient></defs>
+                <path fill="url(#westBg)" d="M0 0h116v128H0z"/><path fill="#111b27" d="M8 128Q12 75 42 77L74 76Q110 90 113 128Z"/><path fill="url(#westMetal)" d="M15 120L31 82L52 74L78 79L99 120L79 128H35Z"/><path fill="#424b53" d="M38 99L59 87L81 99L70 128H48Z"/><path fill="#d4a889" d="M35 42Q33 21 58 19Q85 22 82 51L77 74Q58 91 39 72Z"/><path fill="#3f302c" d="M30 49Q19 14 58 10Q91 6 88 45L78 39L72 26L41 35Z"/><path fill="#29333b" d="M30 28L41 11L58 3L78 12L89 30L82 39H35Z"/><path fill="url(#westMetal)" d="M57 4L61 29L54 40L43 35L29 40L34 24L45 15Z M70 12L83 24L88 40L74 37L65 30Z"/><path fill="#efce8b" d="M33 43L22 58L35 65L44 55L37 45Z M80 43L94 58L82 64L74 56Z"/><path fill="#352822" d="M41 50H52L47 53Z M65 50H77L71 53Z"/><path fill="#543e34" d="M53 61L63 61L58 67Z"/><path fill="#bf9569" d="M49 72Q59 78 69 72L66 80L53 81Z"/>
+              </svg><span class="avatar-level">12</span>
+            </div>
+            <div class="opponent-details"><b>DARION</b><span>CASA RUBRA</span><div class="card-count"><span class="small-card-symbol">▣</span><strong id="westCount">11</strong> cartas</div></div>
+            <div class="side-hand" id="westHand" aria-label="Cartas de Darion"></div>
+          </div>
+          <div class="east-zone player-zone" id="eastZone">
+            <div class="avatar purple-avatar">
+              <svg viewBox="0 0 116 128" class="portrait" role="img" aria-label="Retrato de Morwen, feiticeira">
+                <defs><linearGradient id="eastBg" x2="1" y2="1"><stop stop-color="#564360"/><stop offset="1" stop-color="#130f24"/></linearGradient><linearGradient id="eastCape" x2="0" y2="1"><stop stop-color="#8971ae"/><stop offset="1" stop-color="#1e1c45"/></linearGradient></defs>
+                <path fill="url(#eastBg)" d="M0 0h116v128H0z"/><path fill="url(#eastCape)" d="M0 128Q9 59 30 22Q58 -19 90 23Q114 70 116 128Z"/><path fill="#e8c4ad" d="M42 32Q60 16 76 34L80 62Q75 87 60 92Q42 80 37 58Z"/><path fill="#251f36" d="M40 59Q28 34 45 17Q60 8 77 22Q90 35 81 60Q69 42 59 27Q53 45 38 49Z"/><path fill="#e4bb83" d="M32 45Q54 29 59 12Q65 39 87 46L77 23L59 5L41 19Z"/><path fill="#604381" d="M25 102Q41 78 46 81L60 91L74 79Q90 81 104 123L12 128Z"/><path fill="#dcb6ee" d="M44 53L53 53L50 57L44 56Z M65 53L76 52L71 57L65 56Z"/><path fill="#9b6974" d="M51 71Q61 75 68 70Q59 78 51 71Z"/><path fill="#b393d1" d="M58 86L50 102L59 123L70 101Z"/><path stroke="#d0acef" stroke-width="2" fill="none" d="M21 116Q35 96 47 96M70 95Q90 96 97 113"/>
+              </svg><span class="avatar-level">12</span>
+            </div>
+            <div class="opponent-details"><b>MORWEN</b><span>CASA VIOLETA</span><div class="card-count"><span class="small-card-symbol">▣</span><strong id="eastCount">11</strong> cartas</div></div>
+            <div class="side-hand" id="eastHand" aria-label="Cartas de Morwen"></div>
+          </div>
+          <section class="battlefield" aria-label="Área central do jogo">
+            <div class="score-ribbon enemy-ribbon"><span class="gem red">◆</span><span>CANASTRAS ADVERSÁRIAS</span><span id="enemyCanastras" class="counter">0</span></div>
+            <div class="meld-lane enemy-melds" id="enemyMelds" aria-label="Jogadas da equipe adversária"><p class="empty-lane">SEQUÊNCIAS DOS RIVAIS</p></div>
+            <div class="central-plinth">
+              <div class="pile-area"><div id="stockPile" class="stack-holder" role="button" tabindex="0" aria-label="Comprar carta do monte"><div class="playing-card card-back deck-card"><div class="card-back-design"><i>✧</i><span>✥</span></div></div><div class="pile-label">MONTE <strong id="stockCount">38</strong></div></div></div>
+              <div class="center-ornament" aria-hidden="true"><svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="52" stroke="#bfac69" stroke-width="1" fill="none" opacity=".35"/><circle cx="75" cy="75" r="43" stroke="#bfac69" stroke-width="1" fill="none" stroke-dasharray="2 6" opacity=".6"/><path d="M75 13L89 61L137 75L89 89L75 137L61 89L13 75L61 61Z" fill="none" stroke="#b5a76a" stroke-width="2" opacity=".5"/><circle cx="75" cy="75" r="14" fill="#182d2a" stroke="#c9b774" stroke-width="2"/><path d="M75 59L82 75L75 91L68 75Z" fill="#c9b774"/></svg></div>
+              <div class="pile-area"><div id="discardPile" class="stack-holder" role="button" tabindex="0" aria-label="Pegar todas as cartas do lixo"><div id="discardFace" class="playing-card blank-card"></div><div class="pile-label">LIXO <strong id="discardCount">1</strong></div></div></div>
+            </div>
+            <div class="meld-lane ally-melds" id="allyMelds" aria-label="Jogadas da sua equipe"><p class="empty-lane">SUAS SEQUÊNCIAS</p></div>
+            <div class="score-ribbon ally-ribbon"><span class="gem blue">◆</span><span>CANASTRAS DA AURORA</span><span id="allyCanastras" class="counter">0</span></div>
+          </section>
+          <div class="south-zone player-zone" id="southZone"><span class="turn-medallion">✦</span><span class="south-name">VOCÊ · GUARDIÃO DA AURORA</span><span class="hand-tip" id="handTip">Selecione cartas para formar sequências</span></div>
+          <div id="hand" class="player-hand" aria-label="Suas cartas"></div>
+          <div id="phaseBadge" class="phase-badge" aria-live="polite">SUA VEZ</div>
+        </div>
+      </div>
+      <div class="table-bottom-rim" aria-hidden="true"><span>❧</span> ❖ <span>❧</span></div>
+    </div>
+    <aside class="side-console">
+      <div class="console-heading"><span>✦</span> MESA DE JOGO <span>✦</span></div>
+      <div class="console-section round-section"><small>RODADA</small><strong id="roundLabel">01</strong><div class="rule-divider"></div><small>MORTOS</small><div class="dead-row"><div class="dead-counter"><span class="mini-deck">▣</span><b id="allyDead">11</b><small>AURORA</small></div><div class="dead-counter"><span class="mini-deck">▣</span><b id="enemyDead">11</b><small>SOMBRAS</small></div></div></div>
+      <div class="console-section controls-section"><small>AÇÕES</small>
+        <button id="drawBtn" class="game-action action-gold"><span>✥</span> COMPRAR DO MONTE</button>
+        <button id="takeBtn" class="game-action action-secondary"><span>♧</span> PEGAR O LIXO</button>
+        <button id="meldBtn" class="game-action action-emerald"><span>✦</span> BAIXAR SELEÇÃO</button>
+        <button id="discardBtn" class="game-action action-secondary"><span>♠</span> DESCARTAR CARTA</button>
+        <button id="hintBtn" class="game-action action-plain"><span>?</span> SUGESTÃO DE JOGADA</button>
+      </div>
+      <div class="console-section log-section"><small>DIÁRIO DA MESA</small><p id="message">Bem-vindo ao Buraco Arcano.</p></div>
+      <footer class="console-footer">✧ &nbsp; O DESTINO ESTÁ NAS CARTAS &nbsp; ✧</footer>
+    </aside>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="settingsDialog" class="dialog"><div class="modal-head"><span>✥</span><h2>Configurações da mesa</h2><button class="close-modal" data-close aria-label="Fechar">×</button></div><p>Ajuste a inteligência dos adversários e de sua parceira. A alteração vale também para a partida atual.</p><label for="botDifficulty">DIFICULDADE DOS BOTS</label><select id="botDifficulty"><option value="facil">Fácil — jogadas básicas e imprevisíveis</option><option value="normal">Normal — reconhece sequências</option><option value="dificil">Difícil — gerencia canastras e lixo</option><option value="especialista">Especialista — avalia risco e pontuação</option></select><label class="checkbox-line"><input type="checkbox" id="soundCheckbox" checked /> Sons da mesa e efeitos</label><button id="settingsSave" class="button-ornate modal-button">SALVAR PREFERÊNCIAS</button></dialog>
+  <dialog id="endDialog" class="dialog end-dialog"><div class="modal-head"><span>✥</span><h2 id="endTitle">Fim de rodada</h2></div><p id="endText"></p><button id="playAgain" class="button-ornate modal-button">JOGAR NOVAMENTE</button></dialog>
+  <div class="bottom-disclaimer">BURACO ABERTO · 2 DUPLAS · 104 CARTAS · OFFLINE</div>
+</div>
+<script type="module" src="./src/app.mjs"></script>
+</body>
+</html>

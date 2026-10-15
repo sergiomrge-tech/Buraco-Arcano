@@ -1,0 +1,10 @@
+{
+  "name": "buraco-arcano",
+  "version": "0.1.0-alpha",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/rules.test.mjs",
+    "check": "node --check src/engine.mjs && node --check src/app.mjs && npm test"
+  }
+}

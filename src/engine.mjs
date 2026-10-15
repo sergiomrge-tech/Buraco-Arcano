@@ -1,214 +1,302 @@
-/* Buraco Arcano - regras de jogo independentes da interface.
-   Não usar Math.random no embaralhamento durante partidas normais. */
-export const SUITS=["♠","♥","♣","♦"];
-export const LABELS={1:"A",11:"J",12:"Q",13:"K"};
-export const CARD_COUNT=104;
-export const DIFFICULTIES=["facil","normal","dificil","especialista"];
-export function rankName(rank){return LABELS[rank]||String(rank);}
-export function cardPoints(c){return c.rank===1?15:c.rank===2?20:c.rank>=8?10:5;}
-export function secureRandom(max){
-  if(!Number.isSafeInteger(max)||max<=0)throw Error("Intervalo inválido");
-  if(globalThis.crypto&&typeof globalThis.crypto.getRandomValues==="function"){
-    const limit=4294967296-(4294967296%max);
-    const v=new Uint32Array(1);
-    do{globalThis.crypto.getRandomValues(v);}while(v[0]>=limit);
-    return v[0]%max;
+
+// Buraco Arcano — game engine; no DOM dependencies.
+const SUITS = ['♠','♥','♣','♦'];
+const SUIT_NAMES = ['espadas','copas','paus','ouros'];
+const RANK_NAMES = {1:'A',11:'J',12:'Q',13:'K'};
+const DIFFICULTIES = ['facil','normal','dificil','especialista'];
+const TEAM_OF = [0,1,0,1];
+const cardLabel = c => `${RANK_NAMES[c.rank]||c.rank}${SUITS[c.suit]}`;
+const cardPoints = c => c.rank===1 ? 15 : c.rank===2 ? 10 : c.rank<=7 ? 5 : 10;
+const isWild = c => c.rank===2;
+const cardSort = (a,b) => a.suit-b.suit || a.rank-b.rank || a.id.localeCompare(b.id);
+
+function secureInt(limit, randomWords) {
+  if (!Number.isSafeInteger(limit) || limit<1 || limit>0x100000000) throw new RangeError('invalid bound');
+  // Rejection sampling prevents modulo bias. Browser crypto is mandatory in live play.
+  const range = 0x100000000;
+  const threshold = range - range % limit;
+  let value;
+  do { value = randomWords()[0]; } while(value>=threshold);
+  return value % limit;
+}
+function secureShuffle(input, randomWords = () => {
+  if (!globalThis.crypto?.getRandomValues) throw new Error('Secure random generator unavailable');
+  return globalThis.crypto.getRandomValues(new Uint32Array(1));
+}) {
+  const result = [...input];
+  for(let i=result.length-1;i>0;i--){
+    const j=secureInt(i+1,randomWords);
+    [result[i],result[j]]=[result[j],result[i]];
   }
-  /* Fallback apenas para runtimes de testes sem Web Crypto. */
-  return Math.floor(Math.random()*max);
+  return result;
 }
-export function shuffled(cards,randomInt=secureRandom){
-  const copy=[...cards];
-  for(let i=copy.length-1;i>0;i--){let j=randomInt(i+1);if(j<0||j>i)throw Error("RNG inválido");[copy[i],copy[j]]=[copy[j],copy[i]];}
-  return copy;
+function makeDeck() {
+  const cards=[];
+  for(let deck=0;deck<2;deck++) for(let suit=0;suit<4;suit++) for(let rank=1;rank<=13;rank++)
+    cards.push({id:`${deck}-${suit}-${rank}`,deck,suit,rank});
+  return cards;
 }
-export function newDeck(){
-  const a=[];
-  for(let deck=0;deck<2;deck++)for(const suit of SUITS)for(let rank=1;rank<=13;rank++)a.push({id:deck*52+SUITS.indexOf(suit)*13+rank,suit,rank});
-  return a;
+const teamFor = seat => TEAM_OF[seat];
+
+function runEvaluation(cards, wildIndex, aceHigh, suit) {
+  const naturals=cards.filter((c,i)=>i!==wildIndex);
+  if(naturals.some(c=>c.suit!==suit)) return null;
+  const values=naturals.map(c=>c.rank===1 && aceHigh?14:c.rank).sort((a,b)=>a-b);
+  if(new Set(values).size!==values.length) return null;
+  if(!values.length) return null;
+  const isWildUsed=wildIndex!==-1;
+  if(isWildUsed && cards[wildIndex].rank!==2) return null;
+  if(isWildUsed && values.length<2) return null;
+  let gaps=0;
+  for(let i=1;i<values.length;i++) gaps+=values[i]-values[i-1]-1;
+  if(gaps<0 || gaps>(isWildUsed?1:0)) return null;
+  if(!isWildUsed && gaps!==0) return null;
+  const low=values[0], high=values[values.length-1];
+  if(cards.length>13) return null;
+  if(high>14 || low<1) return null;
+  // No wrapping King to 2; a single wildcard can extend a contiguous run.
+  return {suit,wild:isWildUsed,clean:!isWildUsed,length:cards.length,low,high,gaps,
+    canastra:cards.length>=7 ? (isWildUsed?'suja':'limpa') : null};
 }
-export function teamFor(player){return player%2;}
-export function isWild(c){return c.rank===2;}
-export function describeMeld(cards){
-  if(cards.length<3||cards.length>13)return null;
-  const wilds=cards.filter(isWild),naturals=cards.filter(c=>!isWild(c));
-  if(wilds.length>1||naturals.length<2)return null;
-  const suit=naturals[0].suit;
-  if(naturals.some(c=>c.suit!==suit))return null;
-  let possibilities=[];
-  for(const aceHigh of [false,true]){
-    let values=naturals.map(c=>c.rank===1&&aceHigh?14:c.rank).sort((a,b)=>a-b);
-    if(new Set(values).size!==values.length)continue;
-    let min=values[0],max=values[values.length-1];
-    let gaps=max-min+1-values.length;
-    if(gaps>wilds.length)continue;
-    let start=min,end=max;
-    let missing=wilds.length-gaps;
-    while(missing>0&&start>3){start--;missing--;}
-    while(missing>0&&end<14){end++;missing--;}
-    if(missing)continue;
-    if(end-start+1!==cards.length)continue;
-    possibilities.push({suit,start,end,wild:wilds.length===1,clean:wilds.length===0,canasta:cards.length>=7,points:cards.reduce((n,c)=>n+cardPoints(c),0)});
+function meldInfo(cards) {
+  if(!Array.isArray(cards) || cards.length<3) return null;
+  if(new Set(cards.map(c=>c.id)).size!==cards.length) return null;
+  const candidates=[];
+  for(const suit of [0,1,2,3]) for(const highAce of [false,true]) {
+    const positions=[-1,...cards.map((c,i)=>c.rank===2?i:-1).filter(i=>i>=0)];
+    for(const wildIndex of positions){
+      // A natural 2 only belongs to its own suit; wildcard can be any 2.
+      const value=runEvaluation(cards,wildIndex,highAce,suit);
+      if(value) candidates.push(value);
+    }
   }
-  possibilities.sort((a,b)=>a.start-b.start);
-  return possibilities[0]||null;
+  candidates.sort((a,b)=>Number(a.wild)-Number(b.wild) || a.low-b.low);
+  return candidates[0]||null;
 }
-export function createGame({difficulty="normal",randomInt=secureRandom}={}){
-  if(!DIFFICULTIES.includes(difficulty))throw Error("Dificuldade inválida");
-  const deck=shuffled(newDeck(),randomInt);
-  const hands=[[],[],[],[]];for(let x=0;x<11;x++)for(let p=0;p<4;p++)hands[p].push(deck.pop());
-  const mortos=[[],[]];for(let x=0;x<11;x++)for(let t=0;t<2;t++)mortos[t].push(deck.pop());
-  const discard=[deck.pop()];
-  return {hands,mortos,stock:deck,discard,melds:[[],[]],deadTaken:[false,false],player:0,phase:"draw",difficulty,winner:null,turn:1,history:["Partida iniciada. Duas equipes, 104 cartas e dois mortos."],lastAction:"Nova partida"};
-}
-export function cardsOf(game,player=game.player){return game.hands[player];}
-function assertTurn(g,p,phase){if(g.winner!==null)throw Error("Partida encerrada");if(p!==g.player)throw Error("Não é a sua vez");if(g.phase!==phase)throw Error("Ação indisponível nesta fase");}
-function addLog(g,message){g.lastAction=message;g.history.unshift(message);g.history=g.history.slice(0,28);}
-export function draw(g,player,source){
-  assertTurn(g,player,"draw");
-  if(source!=="stock"&&source!=="discard")throw Error("Origem inválida");
-  if(source==="stock"){
-    if(g.stock.length===0){if(g.discard.length<=1)throw Error("Não há cartas para comprar");const top=g.discard.pop();g.stock=shuffled(g.discard);g.discard=[top];}
-    g.hands[player].push(g.stock.pop());
-  }else{
-    if(!g.discard.length)throw Error("Lixeira vazia");
-    g.hands[player].push(...g.discard.splice(0));
-  }
-  g.phase="play";addLog(g,"Jogador "+(player+1)+" comprou "+(source==="stock"?"do monte":"a lixeira")+".");
-}
-function removeSelected(hand,ids){
-  if(!ids.length||new Set(ids).size!==ids.length)throw Error("Seleção inválida");
-  const found=ids.map(id=>hand.find(c=>c.id===id));
-  if(found.some(c=>!c))throw Error("Carta não está na mão");
-  return found;
-}
-function hasCleanCanasta(g,team){return g.melds[team].some(m=>{let d=describeMeld(m);return d&&d.canasta&&d.clean;});}
-function acquireDead(g,p){
-  const t=teamFor(p);
-  if(!g.deadTaken[t]){
-    if(!g.mortos[t].length)throw Error("Morto indisponível");
-    g.hands[p].push(...g.mortos[t].splice(0));g.deadTaken[t]=true;
-    addLog(g,"Equipe "+(t===0?"Sol":"Lua")+" pegou o morto!");
-    return true;
-  }
-  if(hasCleanCanasta(g,t)){
-    g.winner=t;g.phase="finished";addLog(g,"Batida! Vitória da Casa "+(t===0?"Solar":"Lunar")+"!");
-    return true;
-  }
-  return false;
-}
-export function layMeld(g,p,ids,existingIndex=null){
-  assertTurn(g,p,"play");
-  const selected=removeSelected(g.hands[p],ids);
-  const t=teamFor(p);
-  const original=existingIndex===null?[]:g.melds[t][existingIndex];
-  if(!original)throw Error("Sequência não encontrada");
-  const combined=[...original,...selected];
-  const description=describeMeld(combined);
-  if(!description)throw Error("Precisa ser sequência válida do mesmo naipe com pelo menos 3 cartas e no máximo um 2 curinga.");
-  if(g.hands[p].length===selected.length&&g.deadTaken[t]&&!g.mortos[t].length&&!hasCleanCanasta(g,t)&&!(description.canasta&&description.clean))throw Error("Para bater, sua equipe precisa de canastra limpa.");
-  g.hands[p]=g.hands[p].filter(c=>!ids.includes(c.id));
-  if(existingIndex===null)g.melds[t].push(combined);else g.melds[t][existingIndex]=combined;
-  addLog(g,"Jogador "+(p+1)+" baixou "+selected.length+" carta(s).");
-  if(g.hands[p].length===0)acquireDead(g,p);
-  return description;
-}
-export function discardCard(g,p,id){
-  assertTurn(g,p,"play");
-  const hand=g.hands[p],card=hand.find(c=>c.id===id);
-  if(!card)throw Error("Selecione uma carta da sua mão.");
-  const t=teamFor(p);
-  if(hand.length===1&&g.deadTaken[t]&&!hasCleanCanasta(g,t))throw Error("É necessária uma canastra limpa antes de bater.");
-  g.hands[p]=hand.filter(c=>c.id!==id);g.discard.push(card);
-  addLog(g,"Jogador "+(p+1)+" descartou "+rankName(card.rank)+card.suit+".");
-  if(g.hands[p].length===0){
-    if(g.deadTaken[t]){g.winner=t;g.phase="finished";addLog(g,"Batida! Vitória da Casa "+(t===0?"Solar":"Lunar")+"!");return;}
-    acquireDead(g,p);
-  }
-  nextTurn(g);
-}
-export function nextTurn(g){if(g.winner!==null)return;g.player=(g.player+1)%4;g.phase="draw";g.turn++;if(g.turn>500){g.winner=hasCleanCanasta(g,0)?0:hasCleanCanasta(g,1)?1:2;g.phase="finished";}}
-export function calculateScore(g,team){
-  let total=0;
-  for(const meld of g.melds[team]){let d=describeMeld(meld);if(!d)continue;total+=d.points;if(d.canasta)total+=d.clean?200:100;}
-  for(let p=team;p<4;p+=2)total-=g.hands[p].reduce((n,c)=>n+cardPoints(c),0);
-  if(!g.deadTaken[team])total-=100;
-  if(g.winner===team)total+=100;
-  return total;
-}
-export function autoMeldOptions(hand,existing=[],minSize=3){
-  let options=[];
-  const naturals=hand.filter(c=>!isWild(c));
-  for(const suit of SUITS){
-    const pool=naturals.filter(c=>c.suit===suit);
-    for(let low=1;low<=13;low++)for(let high=low+2;high<=14&&high-low<=12;high++){
-      const numbers=[];let missing=0;
-      for(let r=low;r<=high;r++){
-        if(r===2){missing++;continue;}
-        let found=pool.find(c=>c.rank===(r===14?1:r)&&!numbers.some(k=>k.id===c.id));
-        if(found)numbers.push(found);else missing++;
+function findMeldCandidates(hand,maxResults=30) {
+  // Generate all consecutive suit/rank intervals (Ace low OR Ace high).
+  // Each interval can omit at most one rank, completed by a 2 as curinga.
+  // Duplicate natural ranks are never used in a single sequence.
+  const found=new Map();
+  for(let suit=0;suit<4;suit++) for(const aceHigh of [false,true]) {
+    const available=new Map();
+    for(const c of hand) {
+      if(c.suit!==suit)continue;
+      const v=c.rank===1&&aceHigh ? 14:c.rank;
+      if(!available.has(v))available.set(v,c);
+    }
+    for(let low=aceHigh?2:1;low<=12;low++) for(let high=low+2;high<=14 && high-low+1<=13;high++) {
+      if(!aceHigh && high===14)continue;
+      const selected=[];const missing=[];
+      for(let rank=low;rank<=high;rank++) {
+        if(available.has(rank))selected.push(available.get(rank));
+        else missing.push(rank);
       }
-      if(missing<=1){
-        const wild=hand.find(c=>isWild(c));
-        const candidate=missing===1&&wild?[...numbers,wild]:numbers;
-        if(candidate.length>=minSize&&describeMeld(candidate)){
-          const ids=candidate.map(c=>c.id);
-          if(!options.some(o=>o.ids.join(",")===ids.join(",")))options.push({ids,description:describeMeld(candidate)});
+      if(missing.length>1 || selected.length<2)continue;
+      if(missing.length===1){
+        const wild=hand.find(c=>c.rank===2&&!selected.some(x=>x.id===c.id));
+        if(!wild)continue;
+        selected.push(wild);
+      }
+      const info=meldInfo(selected);
+      if(!info)continue;
+      const key=selected.map(c=>c.id).sort().join(',');
+      if(!found.has(key))found.set(key,{cards:selected,info});
+    }
+  }
+  return [...found.values()]
+    .sort((a,b)=>b.cards.length-a.cards.length || Number(a.info.wild)-Number(b.info.wild))
+    .slice(0,maxResults);
+}
+function scoreTeam(melds, handCards, tookDead, wentOut=false) {
+  let sum=0;
+  for(const m of melds){
+    sum+=m.reduce((n,c)=>n+cardPoints(c),0);
+    const info=meldInfo(m);
+    if(info?.canastra==='limpa') sum+=200;
+    else if(info?.canastra==='suja') sum+=100;
+  }
+  sum-=handCards.reduce((n,c)=>n+cardPoints(c),0);
+  if(!tookDead)sum-=100;
+  if(wentOut) sum+=100;
+  return sum;
+}
+function newGame(difficulty='normal') {
+  const shuffled=secureShuffle(makeDeck());
+  const hands=[[],[],[],[]];
+  for(let n=0;n<11;n++) for(let seat=0;seat<4;seat++)hands[seat].push(shuffled.pop());
+  const dead=[[],[]];
+  for(let n=0;n<11;n++) for(let t=0;t<2;t++)dead[t].push(shuffled.pop());
+  const discard=[shuffled.pop()];
+  hands.forEach(h=>h.sort(cardSort));
+  return {hands,dead,deadTaken:[false,false],stock:shuffled,discard,melds:[[],[]],
+    current:0,phase:'draw',turn:1,round:1,score:[0,0],gameOver:false,winner:null,
+    difficulty:DIFFICULTIES.includes(difficulty)?difficulty:'normal',lastMove:'As cartas foram distribuídas. Sua vez!',
+    history:['Uma nova partida começou.'],botThinking:false};
+}
+function assertCards(state) {
+  const all=[...state.hands.flat(),...state.dead.flat(),...state.stock,...state.discard,...state.melds.flat(2)];
+  if(all.length!==104)throw new Error(`Card conservation violated: ${all.length} instead of 104`);
+  if(new Set(all.map(c=>c.id)).size!==104)throw new Error('Duplicated card IDs');
+  return true;
+}
+function drawStock(s, seat) {
+  if(s.gameOver || s.current!==seat || s.phase!=='draw')return false;
+  if(!s.stock.length){endRound(s,null,'O monte acabou.');return true;}
+  s.hands[seat].push(s.stock.pop());s.hands[seat].sort(cardSort);
+  s.phase='play';s.lastMove=`${seat===0?'Você':'Jogador '+(seat+1)} comprou do monte.`;
+  return true;
+}
+function takeDiscard(s, seat) {
+  if(s.gameOver || s.current!==seat || s.phase!=='draw'|| !s.discard.length)return false;
+  s.hands[seat].push(...s.discard.splice(0));s.hands[seat].sort(cardSort);
+  s.phase='play';s.lastMove=seat===0?'Você pegou o lixo.':'Um oponente pegou o lixo.';
+  return true;
+}
+function layMeld(s, seat, ids, meldIndex=null) {
+  if(s.gameOver || s.current!==seat || s.phase!=='play')return false;
+  const idsUnique=new Set(ids);if(idsUnique.size!==ids.length || !ids.length)return false;
+  const h=s.hands[seat];const chosen=ids.map(id=>h.find(c=>c.id===id));
+  if(chosen.some(c=>!c))return false;
+  const team=teamFor(seat);
+  const target=meldIndex==null?[]:s.melds[team][meldIndex];
+  if(meldIndex!=null&&!target)return false;
+  const combined=[...target,...chosen];const info=meldInfo(combined);
+  if(!info)return false;
+  // A team that has already claimed its morto cannot empty its hand
+  // unless it has a canastra (this action itself may complete it).
+  const handWouldEmpty=h.length===chosen.length;
+  if(handWouldEmpty && s.deadTaken[team] && !info.canastra &&
+     !s.melds[team].some((m,i)=>meldIndex===i ? false : meldInfo(m)?.canastra))return false;
+  s.hands[seat]=h.filter(c=>!idsUnique.has(c.id));
+  if(meldIndex==null)s.melds[team].push(combined);else s.melds[team][meldIndex]=combined;
+  s.lastMove=`${seat===0?'Você':'Jogador '+(seat+1)} ${meldIndex==null?'baixou':'ampliou'} uma sequência${info.canastra?' — canastra '+info.canastra:''}.`;
+  if(s.hands[seat].length===0)emptyHand(s,seat,false);
+  return true;
+}
+function emptyHand(s,seat,byDiscard){
+  const t=teamFor(seat);
+  if(!s.deadTaken[t] && s.dead[t].length) {
+    s.hands[seat].push(...s.dead[t].splice(0));s.hands[seat].sort(cardSort);
+    s.deadTaken[t]=true;
+    s.lastMove += ' O morto foi conquistado!';
+    if(byDiscard)s.phase='end';
+  } else if(s.melds[t].some(m=>meldInfo(m)?.canastra)) {
+    endRound(s,t,'Batida!');
+  } else {
+    // Kept as a defensive assertion; legal actions block this state.
+    throw new Error('Batida sem canastra: jogada deveria ter sido bloqueada');
+  }
+}
+function discardCard(s,seat,id) {
+  if(s.gameOver||s.current!==seat||s.phase!=='play')return false;
+  const index=s.hands[seat].findIndex(c=>c.id===id);
+  if(index<0)return false;
+  const team=teamFor(seat);
+  if(s.hands[seat].length===1 && s.deadTaken[team] &&
+    !s.melds[team].some(m=>meldInfo(m)?.canastra))return false;
+  const [card]=s.hands[seat].splice(index,1);s.discard.push(card);
+  s.lastMove=`${seat===0?'Você':'Jogador '+(seat+1)} descartou ${cardLabel(card)}.`;
+  if(!s.hands[seat].length)emptyHand(s,seat,true);
+  if(!s.gameOver)nextTurn(s);
+  return true;
+}
+function nextTurn(s){s.current=(s.current+1)%4;s.phase='draw';s.turn++;s.history.push(s.lastMove);if(s.history.length>12)s.history.shift();}
+function endRound(s,winningTeam=null,reason='Rodada encerrada.') {
+  if(s.gameOver)return;
+  const points=[0,1].map(team=>scoreTeam(s.melds[team],s.hands.filter((_,seat)=>teamFor(seat)===team).flat(),s.deadTaken[team],team===winningTeam));
+  s.score[0]+=points[0];s.score[1]+=points[1];s.gameOver=true;
+  s.winner=winningTeam===null?(points[0]===points[1]?null:Number(points[1]>points[0])):winningTeam;
+  s.phase='finished';s.lastMove=`${reason} Casas da Aurora: ${points[0]} pontos; Casas das Sombras: ${points[1]} pontos.`;
+}
+const valueOfCard = c => cardPoints(c) + (c.rank===2?9:0) + (c.rank===1?3:0);
+function formationPotential(h){
+  let score=0;
+  for(const c of h)for(const d of h)if(c.id!==d.id){
+    if(c.suit===d.suit && Math.abs(c.rank-d.rank)===1) score+=6;
+    if(c.suit===d.suit && Math.abs(c.rank-d.rank)===2) score+=2;
+  }
+  return score;
+}
+function chooseBotDraw(s,seat,difficulty=s.difficulty) {
+  if(!s.discard.length)return 'stock';
+  const hand=s.hands[seat],top=s.discard[s.discard.length-1];
+  if(difficulty==='facil')return Math.random()<.15?'discard':'stock';
+  const groups=[...hand,...s.discard];
+  const helpful=!!findMeldCandidates(groups,100).find(x=>x.cards.some(c=>c.id===top.id));
+  if(difficulty==='normal')return helpful && s.discard.length<=2?'discard':'stock';
+  const future=formationPotential(groups)-formationPotential(hand);
+  const topUseful=s.melds[teamFor(seat)].some(m=>meldInfo([...m,top]));
+  if(difficulty==='dificil')return (topUseful || helpful && future>5)?'discard':'stock';
+  // Expert avoids bloating their hand unless discard enables meaningful meld(s).
+  const canPlay=topUseful || helpful;
+  const deadNeeded=!s.deadTaken[teamFor(seat)];
+  return canPlay && (s.discard.length<=4 || future>s.discard.length*(deadNeeded?5:3))?'discard':'stock';
+}
+function chooseBotDiscard(s,seat,difficulty=s.difficulty) {
+  const hand=s.hands[seat];
+  if(!hand.length)return null;
+  const scoreCandidate=c=>{
+    const remaining=hand.filter(x=>x.id!==c.id);
+    let score=valueOfCard(c);
+    if(difficulty==='normal')score-=formationPotential(remaining)*.12;
+    if(difficulty==='dificil'||difficulty==='especialista'){
+      score+=formationPotential(remaining)*.45;
+      if(c.rank===2)score-=45;
+      for(const m of s.melds[teamFor(seat)])if(meldInfo([...m,c]))score-=35;
+      if(difficulty==='especialista'){
+        const opponents=s.hands.filter((_,p)=>teamFor(p)!==teamFor(seat));
+        const urgent=opponents.some(h=>h.length<=3);
+        if(urgent && c.rank<=7)score+=10;
+      }
+    }
+    return score;
+  };
+  if(difficulty==='facil')return hand[Math.floor(Math.random()*hand.length)].id;
+  return [...hand].sort((a,b)=>scoreCandidate(b)-scoreCandidate(a))[0].id;
+}
+function botTurn(s,seat=s.current) {
+  if(seat===0||s.current!==seat||s.gameOver)return false;
+  if(s.phase==='draw') {
+    if(chooseBotDraw(s,seat)==='discard')takeDiscard(s,seat);else drawStock(s,seat);
+  }
+  if(s.gameOver)return true;
+  if(s.phase!=='play')return false;
+  const skill=DIFFICULTIES.indexOf(s.difficulty);
+  let budget=skill===0?1:skill===1?2:skill===2?5:8;
+  while(budget-->0&&!s.gameOver&&s.phase==='play') {
+    let played=false;
+    for(const card of [...s.hands[seat]]) {
+      for(let i=0;i<s.melds[teamFor(seat)].length;i++){
+        if(meldInfo([...s.melds[teamFor(seat)][i],card]) && (skill>0 || Math.random()<.25)) {
+          played=layMeld(s,seat,[card.id],i);break;
         }
       }
+      if(played)break;
     }
-  }
-  if(existing.length)for(let i=0;i<existing.length;i++){
-    for(const card of hand)if(describeMeld([...existing[i],card]))options.push({ids:[card.id],index:i,description:describeMeld([...existing[i],card])});
-  }
-  return options;
-}
-export function bestDiscard(hand,level,randomInt=secureRandom){
-  if(!hand.length)return null;
-  if(level==="facil")return hand[randomInt(hand.length)];
-  const naturals=hand.filter(c=>!isWild(c));
-  function value(c){
-    let v=cardPoints(c)*(level==="normal"?0.75:1.35);
-    if(isWild(c))return 1000;
-    const related=naturals.filter(x=>x.id!==c.id&&x.suit===c.suit);
-    for(const other of related){
-      let dist=Math.abs((other.rank===1?14:other.rank)-(c.rank===1?14:c.rank));
-      if(dist===1)v+=level==="especialista"?40:26;
-      else if(dist===2)v+=level==="especialista"?20:12;
+    if(played)continue;
+    const options=findMeldCandidates(s.hands[seat],100);
+    const plan=options.sort((a,b)=>{
+      const qa=a.cards.length*10 + (a.info.clean?4:0) + (a.info.canastra?40:0);
+      const qb=b.cards.length*10 + (b.info.clean?4:0) + (b.info.canastra?40:0);
+      return qb-qa;
+    })[0];
+    if(plan && (skill>0||Math.random()<.38)){
+      played=layMeld(s,seat,plan.cards.map(c=>c.id));
     }
-    return v;
+    if(!played)break;
   }
-  return [...hand].sort((a,b)=>value(a)-value(b))[0];
+  if(!s.gameOver && s.phase==='play')discardCard(s,seat,chooseBotDiscard(s,seat));
+  return true;
 }
-export function botTurn(g,randomInt=secureRandom){
-  if(g.player===0||g.winner!==null)throw Error("Turno não é de bot");
-  const p=g.player,t=teamFor(p),level=g.difficulty;
-  if(g.phase==="draw"){
-    const top=g.discard[g.discard.length-1];
-    let discardUseful=top&&autoMeldOptions([...g.hands[p],top],g.melds[t]).some(o=>o.ids.includes(top.id));
-    if(g.discard.length>0&&discardUseful&&level!=="facil")draw(g,p,"discard");
-    else draw(g,p,"stock");
-  }
-  if(g.phase!=="play")return;
-  let loop=0;
-  const iterations=level==="facil"?1:level==="normal"?5:level==="dificil"?9:15;
-  while(g.phase==="play"&&loop++<iterations){
-    const options=autoMeldOptions(g.hands[p],g.melds[t]);
-    if(!options.length)break;
-    options.sort((a,b)=>{
-      const score=o=>o.ids.length*6+(o.description.canasta?50:0)+(o.description.clean?12:0)+(o.index!==undefined?15:0);
-      return score(b)-score(a);
-    });
-    const choice=level==="facil"?options[randomInt(options.length)]:options[0];
-    if(level==="facil"&&randomInt(100)<35)break;
-    try{layMeld(g,p,choice.ids,choice.index===undefined?null:choice.index);}catch{break;}
-  }
-  if(g.phase==="play"){
-    const c=bestDiscard(g.hands[p],level,randomInt);
-    if(c)try{discardCard(g,p,c.id);}catch{
-      const alternative=g.hands[p].find(x=>x.id!==c.id);
-      if(alternative)discardCard(g,p,alternative.id);
-      else{g.winner=2;g.phase="finished";addLog(g,"Mão bloqueada: empate técnico.");}
-    }
-  }
+function hintForHuman(s) {
+  if(s.current!==0||s.gameOver)return null;
+  if(s.phase==='draw')return 'Compre do monte ou pegue todas as cartas do lixo.';
+  for(const c of s.hands[0]) for(let i=0;i<s.melds[0].length;i++)if(meldInfo([...s.melds[0][i],c]))
+    return {text:`Você pode adicionar ${cardLabel(c)} a uma sequência da sua dupla.`,ids:[c.id],meldIndex:i};
+  const candidates=findMeldCandidates(s.hands[0]);
+  if(candidates.length)return {text:'Existe uma sequência que você pode baixar.',ids:candidates[0].cards.map(c=>c.id),meldIndex:null};
+  return {text:'Não há sequência pronta. Descarte uma carta para encerrar a vez.',ids:[],meldIndex:null};
 }
+
+export {SUITS,SUIT_NAMES,RANK_NAMES,DIFFICULTIES,TEAM_OF,cardLabel,cardPoints,isWild,cardSort,secureInt,secureShuffle,makeDeck,teamFor,meldInfo,findMeldCandidates,scoreTeam,newGame,assertCards,drawStock,takeDiscard,layMeld,emptyHand,discardCard,nextTurn,endRound,chooseBotDraw,chooseBotDiscard,botTurn,hintForHuman};

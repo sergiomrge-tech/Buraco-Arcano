@@ -1,0 +1,6 @@
+.DS_Store
+node_modules/
+tests/screenshots/
+tests/server.log
+tests/server.pid
+*.tmp
