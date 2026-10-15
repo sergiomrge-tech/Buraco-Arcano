@@ -1,0 +1,31 @@
+name: Qualidade e capturas visuais
+on:
+  push:
+    branches: [main, "dev/**"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Testar regras e embaralhamento
+        run: npm test
+      - name: Instalar navegador para captura
+        run: |
+          npm install --no-save playwright@1.55.1
+          npx playwright install --with-deps chromium
+      - name: Testar interface em computador e Android
+        run: npm run test:visual
+      - name: Publicar capturas REAIS para inspecao
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capturas-buraco-arcano
+          path: screenshots/*.png
+          if-no-files-found: ignore
