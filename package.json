@@ -1,0 +1,12 @@
+{
+  "name": "buraco-arcano-as-quatro-casas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/engine.test.mjs",
+    "test:visual": "node tests/visual.mjs",
+    "serve": "python3 -m http.server 8173"
+  },
+  "engines": { "node": ">=20" }
+}
