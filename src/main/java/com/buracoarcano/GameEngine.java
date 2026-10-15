@@ -210,6 +210,13 @@ public final class GameEngine {
                 hands[p].addAll(deads[i]);deads[i]=null;deadTaken[team]=true;
                 log(playerName(p)+" pegou o MORTO da dupla!");return false;
             }
+            // O morto pode ter sido usado para reabastecer o monte quando este acabou.
+            // Se um jogador esvazia a mão e não há morto disponível, encerramos
+            // a rodada SEM batida e SEM o bônus de 100; nunca deixamos turno
+            // ativo com zero cartas, situação que travava a IA.
+            log("Mão vazia sem morto disponível: encerramento sem bônus de batida.");
+            finishRound(null);
+            return true;
         }
         if(deadTaken[team]&&hasClean(team)){finishRound(team);return true;}
         return false;

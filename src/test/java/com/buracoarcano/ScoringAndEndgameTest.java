@@ -53,5 +53,26 @@ public final class ScoringAndEndgameTest {
         QaSupport.ok(!g.deadTaken[0] && !g.deadTaken[1], "morto reiniciado");
         QaSupport.integrity(g, "reinício de rodada");
         QaSupport.report("placar acumulado / nova rodada", start, before);
+
+        start = System.nanoTime(); before = QaSupport.assertions;
+        // Reproduz deadlock de seed 20261052320: um morto foi absorvido
+        // pelo monte e um jogador ficou com zero cartas, sem ter pego o morto.
+        GameEngine noDead = QaSupport.game("normal", 20261052320L);
+        QaSupport.ok(noDead.buyStock(0), "compra de preparação");
+        for (int i = 0; i < 2; i++) {
+            noDead.stock.addAll(noDead.deads[i]);
+            noDead.deads[i] = null;
+        }
+        while (noDead.hands[0].size() > 1)
+            noDead.stock.add(noDead.hands[0].remove(0));
+        QaSupport.ok(noDead.discard(0, noDead.hands[0].get(0).id),
+            "último descarte sem morto não pode travar");
+        QaSupport.ok(noDead.stockEnded && "end".equals(noDead.phase),
+            "rodada encerra ao ficar sem cartas e sem mortos disponíveis");
+        QaSupport.ok(noDead.winner == null, "encerramento sem bônus de batida");
+        QaSupport.ok(noDead.lastRoundScore != null, "pontos do encerramento existem");
+        QaSupport.integrity(noDead, "fim sem morto");
+        QaSupport.report("fim com morto indisponível", start, before);
+
     }
 }

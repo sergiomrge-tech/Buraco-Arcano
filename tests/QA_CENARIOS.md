@@ -40,3 +40,7 @@ No Windows, substitua `:` por `;` no classpath. O GitHub Actions publica
 ou a 90% de semelhança visual. Questões regionais de regras (morto, sequência com dois 2,
 batida e canastras especiais) precisam da variante oficial acordada. Bugs encontrados
 devem ser corrigidos, e testes de regressão preservados.
+
+### Caso-limite: dois mortos esgotados
+
+Se o último morto tiver sido usado para recompor o monte e uma equipe esvaziar a mão sem pegar morto, a rodada encerra sem bônus de batida. Este tratamento evita o turno com zero cartas. Regressão identificada pela semente `20261052320` no modo Normal.
