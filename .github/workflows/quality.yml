@@ -14,7 +14,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Testar regras e embaralhamento
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Testar motor Java nativo
+        run: |
+          mkdir -p target/java-test
+          javac -encoding UTF-8 -d target/java-test src/main/java/com/buracoarcano/GameEngine.java src/test/java/com/buracoarcano/EngineSmokeTest.java
+          java -ea -cp target/java-test com.buracoarcano.EngineSmokeTest
+      - name: Compilar motor Java para JavaScript com TeaVM
+        run: mvn -B -ntp -DskipTests process-classes
+      - name: Testar regressao das regras
         run: npm test
       - name: Instalar navegador para captura
         run: |
