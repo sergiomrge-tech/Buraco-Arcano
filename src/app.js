@@ -150,6 +150,10 @@ $("stock").addEventListener("click",()=>{if(!thinking&&!paused&&game.buyStock(0)
 $("discard-pile").addEventListener("click",()=>{if(!thinking&&!paused&&game.buyDiscard(0)){selected.clear();render();}});
 $("meld-btn").addEventListener("click",()=>{if(game.meld(0,[...selected]))selected.clear();render();showEndIfNeeded();});
 $("discard-btn").addEventListener("click",()=>{if(selected.size!==1)return;const card=[...selected][0];if(game.discard(0,card)){selected.clear();render();showEndIfNeeded();scheduleBots();}else render();});
+$("inspect-discard").addEventListener("click",()=>{
+ const cards=game.discardPile.map((c,i)=>'<div class="discard-item"><span class="discard-order">'+(i+1)+'</span><span class="inspect-card '+((c.s===1||c.s===2)?"red":"")+'">'+cardName(c)+'</span></div>').join("");
+ showModal("LIXO ABERTO",'<p>Você pode examinar todas as cartas descartadas antes de decidir se vai recolher o monte inteiro.</p><div class="discard-gallery">'+cards+'</div><p class="muted">'+game.discardPile.length+' carta(s) do descarte, em ordem de chegada. A última é a do topo.</p>');
+});
 $("rules-toggle").addEventListener("click",showRules);
 $("help-hint").addEventListener("click",showRules);
 $("settings-toggle").addEventListener("click",showSettings);
