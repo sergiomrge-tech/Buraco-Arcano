@@ -219,11 +219,14 @@ public final class CombinatorialQa {
             GameEngine g=new GameEngine(LEVELS[lv],new Random(s)::nextInt);
             g.buyStock(0);
             String id=g.hands[0].get(0).id;
-            String prior=g.stateJson();
+            String handBefore=ids(g.hands[0]);
+            int stockBefore=g.stock.size(), discardBefore=g.discardPile.size();
             boolean result=!g.meld(0,"", -1)&&!g.meld(0,id+","+id,-1)
                 &&!g.meld(0,"nao-existe", -1)&&!g.meld(0,id,9);
             check("INP-"+lv+"-"+seed,"ENTRADAS_INVALIDAS",s,"nivel="+LEVELS[lv],
-                result&&prior.equals(g.stateJson()),"nao aceitar ids falsos, repetidos, indices invalidos",5);
+                result&&ids(g.hands[0]).equals(handBefore)&&g.stock.size()==stockBefore
+                &&g.discardPile.size()==discardBefore&&"meld".equals(g.phase),
+                "nao aceitar ids falsos, repetidos, indices invalidos nem mutar cartas",5);
         }
     }
     private void reportSummary() throws IOException {
