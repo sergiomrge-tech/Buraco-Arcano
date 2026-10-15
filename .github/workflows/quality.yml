@@ -23,6 +23,15 @@ jobs:
         run: mvn -B -ntp package -DskipTests
       - name: Testar motor Java real sem navegador
         run: java -cp target/test-classes:target/classes com.buracoarcano.GameEngineSmoke
+      - name: Testes combinatorios exaustivos e simulacoes por dificuldade
+        run: java -Dburaco.qaSeed=20261015 -Dburaco.fuzzGames=48 -cp target/test-classes:target/classes com.buracoarcano.CombinatorialQa
+      - name: Publicar catalogo de cada caso validado
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-casos-individuais-java
+          path: reports/qa-combinatorio.csv
+          if-no-files-found: ignore
       - name: Testar regras JS anteriores como regressão
         run: npm test
       - name: Instalar navegador para captura real
