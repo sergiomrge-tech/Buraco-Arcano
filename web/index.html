@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101a18">
+  <meta name="description" content="Buraco Arcano — As Quatro Casas. Buraco brasileiro de fantasia para navegador e Android.">
+  <title>Buraco Arcano — As Quatro Casas</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div class="brand"><span class="brand-mark">✧</span><div><div class="overline">AS QUATRO CASAS</div><h1>BURACO <em>ARCANO</em></h1></div></div>
+    <div class="head-controls">
+      <span class="round">✦ TURNO <strong id="turnNumber">01</strong></span>
+      <label class="difficulty-field"><span>BOT</span><select id="difficulty" aria-label="Dificuldade dos bots"><option value="facil">Fácil</option><option value="normal" selected>Normal</option><option value="dificil">Difícil</option><option value="especialista">Especialista</option></select></label>
+      <button class="menu-button" id="newGame" aria-label="Nova partida">↻ <span>Nova partida</span></button>
+      <button class="help-button" id="helpButton" aria-label="Como jogar">?</button>
+    </div>
+  </header>
+
+  <main class="scene">
+    <section class="table" aria-label="Tabuleiro">
+      <div class="table-inner"></div>
+      <div class="corner tl">❦</div><div class="corner tr">❦</div><div class="corner bl">❦</div><div class="corner br">❦</div>
+      <div class="engraving engraving-left">✧ ✦ ✧</div><div class="engraving engraving-right">✧ ✦ ✧</div>
+
+      <div class="banner opponent-banner"><span class="emblem purple">◆</span> CASA LUNAR <strong id="scoreEnemy">0 pts</strong></div>
+      <div class="opponent north" id="player2"><div class="portrait silver">♜</div><div class="identity"><strong>LYRA</strong><small>SUA PARCEIRA</small></div><div id="hand2" class="back-hand"></div><span id="count2" class="hand-number">11</span></div>
+      <div class="opponent west" id="player1"><div class="portrait red-portrait">♞</div><div class="identity"><strong>KAEL</strong><small>ADVERSÁRIO</small></div><div id="hand1" class="back-hand"></div><span id="count1" class="hand-number">11</span></div>
+      <div class="opponent east" id="player3"><div class="portrait blue-portrait">♛</div><div class="identity"><strong>MORWEN</strong><small>ADVERSÁRIA</small></div><div id="hand3" class="back-hand"></div><span id="count3" class="hand-number">11</span></div>
+
+      <div class="center-area">
+        <div class="meld-area lunar"><div class="area-label">☽ CANASTRAS DA LUA <span id="enemyMeldNum">0</span></div><div id="meld1" class="meld-list"><span class="no-meld">Nenhuma sequência no campo</span></div></div>
+        <div class="table-middle">
+          <div class="rune">✦</div>
+          <div class="card-pile"><small>MONTE</small><button id="stockPile" class="pile stock" aria-label="Comprar carta do monte"><div class="card-back"><span>✥</span></div><b id="stockCount" class="pile-number">37</b></button></div>
+          <div class="grand-seal"><div class="seal-circle">✥</div><span>QUATRO<br>CASAS</span></div>
+          <div class="card-pile"><small>LIXEIRA</small><button id="discardPile" class="pile" aria-label="Pegar toda a lixeira"><span id="discardFace"></span><b id="discardCount" class="pile-number">1</b></button></div>
+          <div class="rune">✦</div>
+        </div>
+        <div class="meld-area solar"><div class="area-label">☀ SUAS CANASTRAS <span id="allyMeldNum">0</span></div><div id="meld0" class="meld-list"><span class="no-meld">Selecione 3 ou mais cartas do mesmo naipe em sequência</span></div></div>
+      </div>
+
+      <div class="banner player-banner"><span class="emblem gold">◆</span> CASA SOLAR <strong id="scoreAlly">0 pts</strong></div>
+      <div class="player-label"><div class="portrait player-portrait">♔</div><div class="identity"><strong>VOCÊ</strong><small>HERÓI DA CASA SOLAR</small></div><span id="deadStatus" class="dead-status">MORTO DISPONÍVEL</span></div>
+    </section>
+
+    <section class="hand-panel" aria-label="Área do jogador">
+      <div class="turn-info"><span id="turnPulse" class="turn-pulse"></span><span id="turnMessage" role="status" aria-live="polite">Sua vez de comprar.</span></div>
+      <div class="hand-scroll"><div id="hand0" class="player-hand" aria-label="Suas cartas"></div></div>
+      <div class="hand-actions">
+        <div class="selection-meta"><span>✥ <b id="handCount">11</b> CARTAS</span><span id="selectionCount">0 selecionadas</span></div>
+        <div class="buttons"><button id="clearSelection" class="btn minor">LIMPAR</button><button id="meldButton" class="btn secondary">✧ BAIXAR JOGO</button><button id="discardButton" class="btn primary">DESCARTAR <span>➜</span></button></div>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>✦ UM REINO. QUATRO CASAS. UMA CANASTRA. ✦</span><span>PRÉVIA JAVA WEB · v0.1</span></footer>
+</div>
+
+<dialog id="helpDialog" class="modal">
+  <h2>O caminho da canastra</h2>
+  <p>Você e <b>Lyra</b> formam a Casa Solar. Kael e Morwen jogam pela Casa Lunar.</p>
+  <ol>
+    <li>Compre uma carta do <b>monte</b> ou recolha toda a <b>lixeira</b>.</li>
+    <li>Selecione três ou mais cartas consecutivas do mesmo naipe. Clique em <b>Baixar jogo</b>.</li>
+    <li>Você pode usar um <b>2 como curinga</b> por sequência. Clique em uma sequência Solar existente para acrescentar cartas.</li>
+    <li>Escolha uma carta e clique <b>Descartar</b> para encerrar sua vez.</li>
+    <li>Ao esvaziar a mão, pegue o <b>morto</b>. Para bater, sua equipe precisa ter uma <b>canastra limpa</b> de sete cartas ou mais.</li>
+  </ol>
+  <p class="note">Prévia de Buraco Aberto 2v2: variações regionais, modo online e acabamento visual final ainda não estão incluídos.</p>
+  <button id="closeHelp" class="btn primary">ENTENDI</button>
+</dialog>
+<dialog id="endDialog" class="modal"><h2 id="endTitle">Fim de partida</h2><p id="endSummary"></p><button id="playAgain" class="btn primary">JOGAR NOVAMENTE</button></dialog>
+<div id="toast" class="toast" role="alert" aria-live="assertive"></div>
+<script type="module" src="./src/main.mjs"></script>
+</body>
+</html>
