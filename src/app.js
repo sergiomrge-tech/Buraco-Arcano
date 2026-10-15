@@ -1,9 +1,11 @@
 import {Game,SUITS,rank,sequence,points,DIFFICULTIES} from './engine.js';
 const $=id=>document.getElementById(id),KEY='buraco-arcano-java-v2';
 let game=new Game(),selection=new Set(),page=0,sortMode=0,showTeam=0,lastHand='',timer,toastTimer,epoch=0,sound=false,reduced=false;
-try{const data=JSON.parse(localStorage.getItem(KEY));if(data?.settings){sound=!!data.settings.sound;reduced=!!data.settings.reduced;}if(data?.game?.checkpoint)game=new Game('normal',data.game.checkpoint);}catch{}
-function save(){try{localStorage.setItem(KEY,JSON.stringify({game,settings:{sound,reduced}}));}catch{}}
-function fit(){const s=Math.min(window.innerWidth/864,window.innerHeight/1536);document.documentElement.style.setProperty('--scale',s);}
+let handDrag=null,suppressHandClickUntil=0;
+const HAND_PAGE_SIZE=13,HAND_CARD_WIDTH=145,HAND_WIDTH=792;
+try{const data=JSON.parse(localStorage.getItem(KEY));if(data?.settings){sound=!!data.settings.sound;reduced=!!data.settings.reduced;}if(data?.game?.checkpoint)game=new Game('normal',data.game.checkpoint);if(Array.isArray(data?.handOrder)){const order=new Map(data.handOrder.map((id,i)=>[id,i]));game.hands[0].sort((a,b)=>(order.get(a.id)??999)-(order.get(b.id)??999));}}catch{}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({game,handOrder:game.hands[0].map(c=>c.id),settings:{sound,reduced}}));}catch{}}
+function fit(){cancelHandDrag();const s=Math.min(window.innerWidth/864,window.innerHeight/1536);document.documentElement.style.setProperty('--scale',s);}
 fit();window.addEventListener('resize',fit);window.visualViewport?.addEventListener('resize',fit);
 document.body.classList.toggle('reduced-motion',reduced);
 function ping(f=440){if(!sound)return;try{const C=window.AudioContext||window.webkitAudioContext;audio??=new C();if(audio.state==='suspended')audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.setValueAtTime(f,audio.currentTime);g.gain.setValueAtTime(.025,audio.currentTime);g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+.13);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.14);}catch{}}
@@ -11,9 +13,12 @@ let audio;
 function escapeText(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3800);}
 function cardHTML(c,button=false){return `<${button?'button':'span'} class="playing-card ${c.s===1||c.s===2?'red':''}" ${button?`data-id="${c.id}" aria-label="${rank(c)} de ${['espadas','copas','ouros','paus'][c.s]}" aria-pressed="${selection.has(c.id)}"`:''}><span class="rank">${rank(c)}</span><span class="suit">${SUITS[c.s]}</span><span class="corner-small">${rank(c)}<br>${SUITS[c.s]}</span></${button?'button':'span'}>`;}
-function renderHand(){const hand=game.hands[0],max=13;page=Math.max(0,Math.min(page,Math.max(0,Math.ceil(hand.length/max)-1)));let list=hand.slice(page*max,(page+1)*max);let key=list.map(c=>c.id).join(',');
- if(lastHand!==key){lastHand=key;$('hand').innerHTML=list.map(cardHTMLButton).join('');const mid=(list.length-1)/2;[...$('hand').children].forEach((el,i)=>{const angle=(i-mid)*Math.min(2.7,13/Math.max(1,mid));el.style.left=(list.length===1?301:i*(712-109)/(list.length-1))+'px';el.style.setProperty('--angle',angle+'deg');el.style.setProperty('--dy',(mid?24*Math.pow((i-mid)/mid,2):0)+'px');el.style.setProperty('--z',i+1);el.style.setProperty('--delay',i*.025+'s');});}
- $('hand').querySelectorAll('[data-id]').forEach(el=>{let chosen=selection.has(el.dataset.id);el.classList.toggle('selected',chosen);el.setAttribute('aria-pressed',chosen);el.disabled=game.over||game.turn!==0;});
+function handSlots(count){const stride=count>1?Math.min(110,(HAND_WIDTH-HAND_CARD_WIDTH)/(count-1)):0;const start=(HAND_WIDTH-HAND_CARD_WIDTH-stride*(count-1))/2;return Array.from({length:count},(_,i)=>start+i*stride);}
+function positionHandCards(ids){const slots=handSlots(ids.length),mid=(ids.length-1)/2;for(let i=0;i<ids.length;i++){const el=[...$('hand').querySelectorAll('[data-id]')].find(el=>el.dataset.id===ids[i]);if(!el)continue;el.style.left=slots[i]+'px';el.style.setProperty('--angle',(mid?(i-mid)/mid*7:0)+'deg');el.style.setProperty('--dy',(mid?18*Math.pow((i-mid)/mid,2):0)+'px');el.style.setProperty('--z',i+1);}}
+function renderHand(){const hand=game.hands[0],max=HAND_PAGE_SIZE;page=Math.max(0,Math.min(page,Math.max(0,Math.ceil(hand.length/max)-1)));const list=hand.slice(page*max,(page+1)*max),key=list.map(c=>c.id).join(',');
+ if(handDrag&&(game.over||hand.map(c=>c.id).join(',')!==handDrag.handKey))cancelHandDrag(false);
+ if(lastHand!==key){lastHand=key;$('hand').innerHTML=list.map(cardHTMLButton).join('');positionHandCards(list.map(c=>c.id));[...$('hand').querySelectorAll('[data-id]')].forEach((el,i)=>el.style.setProperty('--delay',i*.025+'s'));}
+ $('hand').querySelectorAll('[data-id]').forEach(el=>{const chosen=selection.has(el.dataset.id);el.classList.toggle('selected',chosen);el.classList.toggle('drag-source',!!handDrag?.moving&&handDrag.id===el.dataset.id);el.setAttribute('aria-pressed',chosen);el.disabled=game.over;});
  $('handPage').textContent=`${page+1}/${Math.max(1,Math.ceil(hand.length/max))}`;$('handPrev').disabled=page===0;$('handNext').disabled=(page+1)*max>=hand.length;$('handPrev').parentElement.hidden=hand.length<=max;
 }
 function cardHTMLButton(c){return cardHTML(c,true);}
@@ -38,8 +43,29 @@ function scheduleBots(){clearTimeout(timer);if(game.over){timer=setTimeout(()=>s
 function dialog(html){$('dialogBody').innerHTML=html;if(!$('dialog').open)$('dialog').showModal();}
 function closeDialog(){$('dialog').close();}
 $('closeDialog').onclick=closeDialog;$('dialog').addEventListener('click',e=>{if(e.target===$('dialog'))closeDialog();});
+function clearHandDragVisuals(d){clearTimeout(d.edgeTimer);d.ghost?.remove();d.marker?.remove();$('hand').classList.remove('reordering');$('hand').querySelectorAll('.drag-source').forEach(el=>el.classList.remove('drag-source'));$('handDragHint').textContent='Toque para selecionar · Arraste para organizar';try{if($('hand').hasPointerCapture(d.pointerId))$('hand').releasePointerCapture(d.pointerId);}catch{}}
+function cancelHandDrag(redraw=true){if(!handDrag)return;const d=handDrag;handDrag=null;clearHandDragVisuals(d);if(d.moving){suppressHandClickUntil=performance.now()+350;if(redraw){lastHand='';renderHand();}}}
+function previewHandDrag(clientX,clientY){const d=handDrag;if(!d?.moving)return;const stage=$('stage').getBoundingClientRect(),scale=stage.width/864;d.ghost.style.left=((clientX-stage.left)/scale-HAND_CARD_WIDTH/2)+'px';d.ghost.style.top=((clientY-stage.top)/scale-70)+'px';
+ const handRect=$('hand').getBoundingClientRect(),x=(clientX-handRect.left)/scale,list=game.hands[0].slice(page*HAND_PAGE_SIZE,(page+1)*HAND_PAGE_SIZE),slots=handSlots(list.length);
+ let slot=0;for(let i=1;i<slots.length;i++)if(Math.abs(x-slots[i]-HAND_CARD_WIDTH/2)<Math.abs(x-slots[slot]-HAND_CARD_WIDTH/2))slot=i;
+ d.target=page*HAND_PAGE_SIZE+slot;const ids=list.map(c=>c.id);const local=ids.indexOf(d.id);if(local>=0){ids.splice(local,1);ids.splice(slot,0,d.id);positionHandCards(ids);}if(!d.marker.isConnected)$('hand').append(d.marker);d.marker.style.left=(slots[slot]??0)+'px';
+ const direction=x<42&&page>0?-1:x>HAND_WIDTH-42&&(page+1)*HAND_PAGE_SIZE<game.hands[0].length?1:0;
+ if(direction!==d.edgeDirection){clearTimeout(d.edgeTimer);d.edgeDirection=direction;if(direction)d.edgeTimer=setTimeout(()=>{if(handDrag!==d)return;page+=direction;lastHand='';renderHand();d.edgeDirection=0;previewHandDrag(clientX,clientY);},600);}
+}
+$('hand').addEventListener('pointerdown',e=>{const card=e.target.closest('[data-id]');if(!card||game.over||!e.isPrimary||e.button!==0)return;cancelHandDrag();handDrag={id:card.dataset.id,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,handKey:game.hands[0].map(c=>c.id).join(','),moving:false,target:game.hands[0].findIndex(c=>c.id===card.dataset.id),edgeDirection:0};});
+document.addEventListener('pointermove',e=>{const d=handDrag;if(!d||e.pointerId!==d.pointerId)return;if(!d.moving&&Math.hypot(e.clientX-d.startX,e.clientY-d.startY)<8)return;
+ if(!d.moving){d.moving=true;const source=$('hand').querySelector(`[data-id="${d.id}"]`);if(!source)return cancelHandDrag();d.ghost=source.cloneNode(true);d.ghost.removeAttribute('data-id');d.ghost.removeAttribute('aria-pressed');d.ghost.setAttribute('aria-hidden','true');d.ghost.className+=' hand-drag-ghost';d.ghost.classList.remove('selected');d.ghost.disabled=false;$('stage').append(d.ghost);source.classList.add('drag-source');d.marker=document.createElement('i');d.marker.className='hand-drop-marker';d.marker.setAttribute('aria-hidden','true');$('hand').append(d.marker);$('hand').classList.add('reordering');$('handDragHint').textContent='Solte para colocar a carta nesta posição';try{$('hand').setPointerCapture(e.pointerId);}catch{}}
+ e.preventDefault();previewHandDrag(e.clientX,e.clientY);
+},{passive:false});
+document.addEventListener('pointerup',e=>{const d=handDrag;if(!d||e.pointerId!==d.pointerId)return;handDrag=null;clearHandDragVisuals(d);if(!d.moving)return;
+ e.preventDefault();suppressHandClickUntil=performance.now()+350;const hand=game.hands[0],from=hand.findIndex(c=>c.id===d.id);if(from>=0){const [card]=hand.splice(from,1);hand.splice(Math.max(0,Math.min(d.target,hand.length)),0,card);}lastHand='';renderHand();save();ping(420);
+});
+document.addEventListener('pointercancel',e=>{if(handDrag?.pointerId===e.pointerId)cancelHandDrag();});
+$('hand').addEventListener('lostpointercapture',e=>{if(e.target===$('hand')&&handDrag?.pointerId===e.pointerId)cancelHandDrag();});
+document.addEventListener('pointerdown',()=>{suppressHandClickUntil=0;},true);
+document.addEventListener('click',e=>{if(e.detail!==0&&performance.now()<suppressHandClickUntil){e.preventDefault();e.stopImmediatePropagation();suppressHandClickUntil=0;}},true);
 $('hand').onclick=e=>{const el=e.target.closest('[data-id]');if(!el||game.turn!==0||game.over)return;let id=el.dataset.id;selection.has(id)?selection.delete(id):selection.add(id);ping(350+selection.size*60);render();};
-$('handPrev').onclick=()=>{page--;lastHand='';renderHand();};$('handNext').onclick=()=>{page++;lastHand='';renderHand();};
+$('handPrev').onclick=()=>{cancelHandDrag();page--;lastHand='';renderHand();};$('handNext').onclick=()=>{cancelHandDrag();page++;lastHand='';renderHand();};
 $('stock').onclick=()=>perform(()=>{game.draw();selection.clear();});$('trash').onclick=()=>perform(()=>{game.draw('trash');selection.clear();});
 $('action').onclick=()=>{if(game.over)return showResult();perform(()=>{if(selection.size>=3)game.meld([...selection]);else if(selection.size===1)game.discard([...selection][0]);else throw Error('Selecione uma carta.');selection.clear();});};
 $('melds').onclick=e=>{let el=e.target.closest('[data-meld]');if(!el)return;if(showTeam!==0)return toast('Estas são as sequências da dupla rival.');if(game.turn!==0||game.over)return toast('Aguarde seu turno.');if(!selection.size)return toast('Selecione cartas na mão e toque nesta sequência.');perform(()=>{game.meld([...selection],+el.dataset.meld);selection.clear();});};
@@ -61,6 +87,6 @@ function inspectTrash(){dialog(`<h2>Lixo aberto · ${game.trash.length} cartas</
 $('trashInspect').onclick=inspectTrash;
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 window.addEventListener('pagehide',save);
-document.addEventListener('visibilitychange',()=>{if(document.hidden){save();clearTimeout(timer);}else scheduleBots();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelHandDrag();save();clearTimeout(timer);}else scheduleBots();});
 // Read-only QA surface; production state transitions always go through Java.
 window.__buraco={state:()=>JSON.parse(JSON.stringify({hands:game.hands,turn:game.turn,phase:game.phase,over:game.over,difficulty:game.difficulty,total:[...game.hands.flat(),...game.melds.flat(2),...game.dead.flat(),...game.stock,...game.trash].length})),checkpoint:()=>game.checkpoint()};

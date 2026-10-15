@@ -1,0 +1,24 @@
+name: Verificar cartas e arraste no celular
+on:
+  push:
+    branches: [release/android-apk]
+permissions:
+  contents: read
+jobs:
+  touch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm run check && npm run build
+      - run: npm install --no-save playwright@1.56.1 && npx playwright install --with-deps chromium
+      - run: node tests/hand-drag.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Cartas-maiores-arraste-touch
+          path: qa/hand/
+          retention-days: 30
