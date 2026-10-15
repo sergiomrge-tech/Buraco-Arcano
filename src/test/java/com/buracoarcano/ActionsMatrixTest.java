@@ -9,26 +9,30 @@ public final class ActionsMatrixTest {
     private static GameEngine prepared(long seed) {
         return QaSupport.game("normal", seed);
     }
-    private static GameEngine.Card move(GameEngine game, int suit, int rank) {
-        for (GameEngine.Card c : game.hands[0]) if (c.suit == suit && c.rank == rank) return c;
-        for (int i = 0; i < game.stock.size(); i++) {
-            GameEngine.Card c = game.stock.get(i);
-            if (c.suit == suit && c.rank == rank) {
-                // Troca uma carta da mão por uma do monte, conservando exatamente 104.
-                int swap = -1;
-                for (int j = 0; j < game.hands[0].size(); j++) {
-                    GameEngine.Card old = game.hands[0].get(j);
-                    if (old.suit != suit || old.rank < 4 || old.rank > 9) {
-                        swap = j; break;
-                    }
-                }
-                if (swap == -1) swap = 0;
-                game.stock.set(i, game.hands[0].remove(swap));
-                game.hands[0].add(c);
-                return c;
-            }
+    private static final java.util.IdentityHashMap<GameEngine,java.util.Set<String>> preserved =
+        new java.util.IdentityHashMap<>();
+    private static GameEngine.Card move(GameEngine game,int suit,int rank) {
+        java.util.Set<String> keep=preserved.computeIfAbsent(game,k->new java.util.HashSet<>());
+        for(GameEngine.Card c:game.hands[0])if(c.suit==suit&&c.rank==rank) {
+            keep.add(c.id);return c;
         }
-        throw new AssertionError("Não encontrada no monte nem na mão: " + suit + "/" + rank);
+        List<List<GameEngine.Card>> pools=new ArrayList<>();
+        pools.add(game.stock);pools.add(game.discardPile);
+        for(int i=1;i<4;i++)pools.add(game.hands[i]);
+        for(List<GameEngine.Card> d:game.deads)if(d!=null)pools.add(d);
+        for(List<GameEngine.Card> pool:pools)for(int idx=0;idx<pool.size();idx++) {
+            GameEngine.Card c=pool.get(idx);
+            if(c.suit!=suit||c.rank!=rank)continue;
+            int handIndex=-1;
+            for(int k=0;k<game.hands[0].size();k++)
+                if(!keep.contains(game.hands[0].get(k).id)){handIndex=k;break;}
+            if(handIndex<0)throw new AssertionError("Sem carta livre para fixture de sequencia");
+            GameEngine.Card spare=game.hands[0].set(handIndex,c);
+            pool.set(idx,spare);
+            keep.add(c.id);
+            return c;
+        }
+        throw new AssertionError("Carta fisica nao encontrada: "+suit+"/"+rank);
     }
     public static void main(String[] args) {
         long start = System.nanoTime(), before = QaSupport.assertions;
