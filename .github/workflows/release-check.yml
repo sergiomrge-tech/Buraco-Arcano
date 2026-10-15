@@ -24,8 +24,9 @@ jobs:
       - name: Verificações dirigidas (sem testes exaustivos)
         run: |
           mkdir -p /tmp/classes
-          javac -d /tmp/classes java/src/main/java/com/buracoarcano/GameEngine.java java/src/test/java/com/buracoarcano/ReleaseSmokeTest.java
+          javac -d /tmp/classes java/src/main/java/com/buracoarcano/GameEngine.java java/src/test/java/com/buracoarcano/ReleaseSmokeTest.java java/src/test/java/com/buracoarcano/Playthrough.java
           java -cp /tmp/classes com.buracoarcano.ReleaseSmokeTest
+          java -cp /tmp/classes com.buracoarcano.Playthrough
           npm run check
           npm run build
       - name: Preparar QA de navegador

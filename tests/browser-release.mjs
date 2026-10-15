@@ -24,7 +24,7 @@ try {
   await page.locator('#trashInspect').tap();await page.locator('#dialog').waitFor({state:'visible'});await page.locator('#closeDialog').tap();
   await page.evaluate(()=>navigator.serviceWorker.ready);await page.reload();await page.locator('#hand [data-id]').first().waitFor();
   await context.setOffline(true);await page.reload();await page.locator('#hand [data-id]').first().waitFor();assert.equal(await page.evaluate(()=>window.__buraco.state().total),104);await context.setOffline(false);
-  await page.screenshot({path:`qa/screenshots/${name}-jogando.png`});
+  await page.waitForTimeout(800);await page.screenshot({path:`qa/screenshots/${name}-jogando.png`});
   results.push({name,viewport:[width,height],checks:['104 cartas','toque compra/seleção/descarte','dificuldade','retomar save','3 bots','lixo aberto','recarga offline']});await context.close();
  }
  assert.deepEqual(errors,[]);await writeFile('qa/browser-results.json',JSON.stringify({results,errors},null,2));
