@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#111b21">
+<meta name="description" content="Buraco Arcano — jogo de cartas brasileiro em duplas, com visual de fantasia.">
+<title>Buraco Arcano · As Quatro Casas</title>
+<link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+<div id="game" class="game" aria-label="Mesa de Buraco Arcano">
+  <div class="wall-pattern" aria-hidden="true"></div>
+  <div class="sconce left-sconce" aria-hidden="true">✦</div><div class="sconce right-sconce" aria-hidden="true">✦</div>
+  <header class="topbar">
+    <div class="brand"><span class="brand-glyph">✥</span><div><strong>BURACO <em>ARCANO</em></strong><small>AS QUATRO CASAS</small></div></div>
+    <div class="scoreboard"><div class="score-team aurora"><span>CASA DA AURORA</span><b id="score-aurora">0</b></div><div class="score-sigil">⚜</div><div class="score-team sombra"><span>CASA DA SOMBRA</span><b id="score-sombra">0</b></div></div>
+    <div class="header-buttons"><span id="round-label" class="round-label">RODADA 01</span><button id="rules-toggle" class="round-button" aria-label="Regras" title="Regras">?</button><button id="settings-toggle" class="round-button" aria-label="Configurações" title="Configurações">⚙</button></div>
+  </header>
+  <main class="arena">
+    <div class="table-outer"><div class="table-rim"><div class="table-felt">
+      <div class="filigree filigree-top">❦ ───── ✧ ───── ❦</div><div class="filigree filigree-bottom">❦ ───── ✧ ───── ❦</div>
+      <div class="felt-watermark" aria-hidden="true"><div class="watermark-circle">✥</div></div>
+      <div class="meld-side top-meld"><div class="meld-label">JOGOS DA SOMBRA</div><div id="meld-enemy" class="meld-row"></div></div>
+      <div class="meld-side bottom-meld"><div class="meld-label">JOGOS DA AURORA <span class="tiny-hint">(toque para ampliar)</span></div><div id="meld-friendly" class="meld-row"></div></div>
+      <div class="deck-zone">
+        <button id="stock" class="stock-stack" aria-label="Comprar do monte"><span class="arcane-cardback">✥</span><span id="stock-count" class="count">37</span></button>
+        <div class="deck-middle"><span>MONTE</span><span class="gold-diamond">◆</span><span>LIXO ABERTO</span></div>
+        <button id="discard-pile" class="discard-stack" aria-label="Recolher o lixo"><span id="discard-face" class="discard-face"></span><span id="discard-count" class="count">1</span></button>
+      </div>
+      <div class="dead-zone dead-left"><span class="dead-back">✦</span><small id="dead-left-label">MORTO I</small></div>
+      <div class="dead-zone dead-right"><span class="dead-back">✦</span><small id="dead-right-label">MORTO II</small></div>
+    </div></div></div>
+    <section class="seat seat-top" data-player="2"><div id="avatar-2" class="portrait portrait-sun"></div><div class="seat-names"><strong>LYRA</strong><span>ALIADA · AURORA</span></div><div id="hand-2" class="enemy-hand horizontal"></div><div id="count-2" class="hand-count">11 CARTAS</div></section>
+    <section class="seat seat-left" data-player="1"><div id="avatar-1" class="portrait portrait-moon"></div><div class="seat-names"><strong>MORGATH</strong><span>RIVAL · SOMBRA</span></div><div id="hand-1" class="enemy-hand vertical"></div><div id="count-1" class="hand-count">11 CARTAS</div></section>
+    <section class="seat seat-right" data-player="3"><div id="avatar-3" class="portrait portrait-ember"></div><div class="seat-names"><strong>VALTOR</strong><span>RIVAL · SOMBRA</span></div><div id="hand-3" class="enemy-hand vertical"></div><div id="count-3" class="hand-count">11 CARTAS</div></section>
+    <div class="bottom-decoration">⚜ <span>O DESTINO ESTÁ NAS CARTAS</span> ⚜</div>
+    <div id="turn-banner" class="turn-banner">SUA VEZ · ESCOLHA DE ONDE COMPRAR</div>
+  </main>
+  <footer class="player-tray">
+    <div class="player-portrait"><div id="avatar-0" class="portrait portrait-player"></div><div class="player-name"><strong>VOCÊ</strong><span>CASA DA AURORA</span></div></div>
+    <div id="hand-0" class="player-hand" aria-label="Suas cartas"></div>
+    <div class="actions">
+      <button id="meld-btn" class="action-btn action-gold" disabled><span>✦</span> BAIXAR</button>
+      <button id="discard-btn" class="action-btn action-red" disabled><span>➤</span> DESCARTAR</button>
+    </div>
+    <div class="micro-info"><span id="my-cards">11 CARTAS</span><span id="game-phase">AGUARDANDO COMPRA</span></div>
+  </footer>
+  <div class="bottom-bar"><div id="message" class="story-message" role="status">Os reinos se encontram para uma nova disputa.</div><button id="help-hint">COMO JOGAR</button></div>
+  <div id="overlay" class="overlay" hidden><section class="modal" role="dialog" aria-modal="true"><div class="modal-knot">✥</div><h2 id="modal-title">CONSELHO DAS QUATRO CASAS</h2><div id="modal-body"></div><button id="modal-close" class="action-btn action-gold">VOLTAR À MESA</button></section></div>
+</div>
+<script type="module" src="src/app.js"></script>
+</body>
+</html>
