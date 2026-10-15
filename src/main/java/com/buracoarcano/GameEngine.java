@@ -160,7 +160,7 @@ public final class GameEngine {
             picked.add(match);
         }
         int team=teamOf(p);
-        if(groupIndex>=melds[team].size())return false;
+        if(groupIndex < -1 || groupIndex>=melds[team].size())return false;
         List<Card> combined=new ArrayList<>();
         if(groupIndex>=0)combined.addAll(melds[team].get(groupIndex).cards);
         combined.addAll(picked);
