@@ -24,7 +24,13 @@ try {
   assert.equal(count,37);
   assert.equal(await page.locator(".seat").count(),3);
   assert.equal(await page.locator(".table-felt").count(),1);
-  await page.screenshot({path:"screenshots/"+target.name+".png",fullPage:true});
+  const gameBox=await page.locator("#game").boundingBox();
+  assert.ok(gameBox.width<=target.width+1 && gameBox.height<=target.height+1,"tabuleiro excedeu o viewport visivel");
+  for(const selector of ["#stock","#discard-pile","#meld-btn","#discard-btn"]){
+    const box=await page.locator(selector).boundingBox();
+    assert.ok(box && box.x>=-1 && box.y>=-1 && box.x+box.width<=target.width+1 && box.y+box.height<=target.height+1,selector+" saiu da tela");
+  }
+  await page.screenshot({path:"screenshots/"+target.name+".png",fullPage:false});
   if(target.name==="desktop-1440x900"){
    await page.locator("#settings-toggle").click();
    assert.equal(await page.locator("#difficulty option").count(),4);
@@ -40,7 +46,7 @@ try {
      const g=window.__buracoQa.getGame();
      return g.stock.length+g.discardPile.length+g.hands.flat().length+g.deads.flatMap(d=>d||[]).length+g.melds.flatMap(t=>t.flatMap(m=>m.cards)).length;
    }),104);
-   await page.screenshot({path:"screenshots/turn-after-bots.png",fullPage:true});
+   await page.screenshot({path:"screenshots/turn-after-bots.png",fullPage:false});
   }
   assert.deepEqual(exceptions,[],target.name+" erros de script");
   await page.close();
