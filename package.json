@@ -1,1 +1,1 @@
-{"name":"buraco-arcano","version":"0.2.1","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","check":"node --check src/app.js && node --check src/engine.js && node --check sw.js"}}
+{"name":"buraco-arcano","version":"0.2.2","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","check":"node --check src/app.js && node --check src/engine.js && node --check sw.js"}}

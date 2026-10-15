@@ -48,15 +48,15 @@ jobs:
       - name: Verificar APK, alinhamento e assinatura
         run: |
           mkdir -p deliverables
-          cp android/app/build/outputs/apk/debug/app-debug.apk deliverables/Buraco_Arcano_v0.2.1.apk
-          "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -v 4 deliverables/Buraco_Arcano_v0.2.1.apk > deliverables/alinhamento.txt
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs deliverables/Buraco_Arcano_v0.2.1.apk > deliverables/assinatura.txt
-          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging deliverables/Buraco_Arcano_v0.2.1.apk > deliverables/pacote.txt
-          unzip -t deliverables/Buraco_Arcano_v0.2.1.apk > deliverables/integridade.txt
-          unzip -l deliverables/Buraco_Arcano_v0.2.1.apk | grep 'assets/web/java/engine.js'
-          sha256sum deliverables/Buraco_Arcano_v0.2.1.apk > deliverables/SHA256.txt
+          cp android/app/build/outputs/apk/debug/app-debug.apk deliverables/Buraco_Arcano_v0.2.2.apk
+          "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -v 4 deliverables/Buraco_Arcano_v0.2.2.apk > deliverables/alinhamento.txt
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs deliverables/Buraco_Arcano_v0.2.2.apk > deliverables/assinatura.txt
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging deliverables/Buraco_Arcano_v0.2.2.apk > deliverables/pacote.txt
+          unzip -t deliverables/Buraco_Arcano_v0.2.2.apk > deliverables/integridade.txt
+          unzip -l deliverables/Buraco_Arcano_v0.2.2.apk | grep 'assets/web/java/engine.js'
+          sha256sum deliverables/Buraco_Arcano_v0.2.2.apk > deliverables/SHA256.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: Buraco-Arcano-APK-v0.2.1
+          name: Buraco-Arcano-APK-v0.2.2
           path: deliverables/
           retention-days: 30
