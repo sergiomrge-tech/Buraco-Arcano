@@ -35,7 +35,7 @@ jobs:
         run: |
           mkdir -p dist/src dist/web/java
           cp index.html dist/
-          cp src/app.js src/java-engine.js src/engine.js src/style.css dist/src/
+          cp src/app.js src/browser-game.js src/engine.js src/style.css dist/src/
           cp web/java/engine.js dist/web/java/
       - name: Publicar build web para navegador
         uses: actions/upload-artifact@v4
