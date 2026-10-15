@@ -38,7 +38,7 @@ public final class Game {
 
     private final RandomIndex rng;
     private final List<Card>[] hands;
-    private final List<Card>[] melds;
+    private final List<List<Card>>[] melds;
     private final List<Card> stock = new ArrayList<>();
     private final List<Card> discard = new ArrayList<>();
     private final List<Card>[] mortos;
@@ -57,7 +57,7 @@ public final class Game {
         if (!isDifficulty(difficulty)) throw new IllegalArgumentException("Dificuldade inválida");
         this.difficulty = difficulty;
         hands = (List<Card>[]) new List[4];
-        melds = (List<Card>[]) new List[2];
+        melds = (List<List<Card>>[]) new List[2];
         mortos = (List<Card>[]) new List[2];
         for (int i = 0; i < 4; i++) hands[i] = new ArrayList<>();
         for (int i = 0; i < 2; i++) { melds[i] = new ArrayList<>(); mortos[i] = new ArrayList<>(); }
