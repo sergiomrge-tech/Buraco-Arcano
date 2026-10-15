@@ -1,0 +1,49 @@
+name: Auditoria combinatória Java
+on:
+  push:
+    branches:
+      - 'qa/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  combinations:
+    name: Combinações, regressões e fuzz 2v2
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Obter código desta branch
+        uses: actions/checkout@v4
+      - name: Preparar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Compilar o motor Java e todas as suítes
+        run: |
+          mkdir -p out reports
+          javac -encoding UTF-8 -d out \
+            src/main/java/com/buracoarcano/GameEngine.java \
+            src/test/java/com/buracoarcano/*.java
+      - name: Testar 182104 trincas e demais combinações de forma independente
+        run: java -Xmx1024m -cp out com.buracoarcano.AuditAllTests
+      - name: Testar regressões legadas
+        run: |
+          java -cp out com.buracoarcano.GameEngineSmoke
+          java -cp out com.buracoarcano.EngineSmokeTest
+      - name: Gerar catálogo detalhado por caso e partidas pseudoaleatórias
+        run: |
+          java -Xmx1024m -Dburaco.fuzzGames=12 \
+            -Dburaco.qaSeed=20261015 \
+            -Dburaco.report=reports/qa-combinatorio.csv \
+            -cp out com.buracoarcano.CombinatorialQa
+      - name: Publicar relatórios para consulta no GitHub
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-combinatoria-java
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 90
