@@ -28,7 +28,7 @@ try{
  const cdp=await ctx.newCDPSession(page);await select(page,run.slice(5,8));await drag(page,cdp,run[5],page.locator('#meldDrop'));assert.equal(await page.locator('#melds .meld-row').count(),2);
  await drag(page,cdp,run[4],page.locator('[data-meld="0"]'));assert.equal(await page.locator('[data-meld="0"] .playing-card').count(),5);
  // Invalid run must leave state and selection intact, and explain the rejection.
- const remaining=await page.locator('#hand [data-id]').evaluateAll(els=>els.slice(0,3).map(el=>el.dataset.id));await select(page,remaining);const before=await page.evaluate(()=>window.__buraco.checkpoint());await page.locator('#meldDrop').tap();assert.equal(await page.evaluate(()=>window.__buraco.checkpoint()),before);assert.equal(await page.locator('#hand .selected').count(),3);
+ const remaining=await page.locator('#hand [data-id]').evaluateAll(els=>[els[0],els[2],els[3]].map(el=>el.dataset.id));await select(page,remaining);const before=await page.evaluate(()=>window.__buraco.checkpoint());await page.locator('#meldDrop').tap();assert.equal(await page.evaluate(()=>window.__buraco.checkpoint()),before);assert.equal(await page.locator('#hand .selected').count(),3);
  await select(page,remaining);await page.screenshot({path:`qa/melds/mesa-${width}.png`});
  await page.reload();await page.locator('#hand [data-id]').first().waitFor();assert.equal(await page.locator('#melds .meld-row').count(),2);assert.equal(await page.evaluate(()=>window.__buraco.state().total),104);
  results.push({width,checks:['botão baixa jogo','toque acrescenta carta','arraste baixa grupo','arraste acrescenta carta','sequência inválida preserva estado','save','104 cartas']});await ctx.close();
