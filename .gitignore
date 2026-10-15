@@ -4,3 +4,6 @@ tests/screenshots/
 tests/server.log
 tests/server.pid
 *.tmp
+java/target/
+dist/
+qa/

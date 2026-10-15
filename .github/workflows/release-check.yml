@@ -1,0 +1,44 @@
+name: Compilar Java e verificar mesa
+on:
+  push:
+    branches: [main, release/mesa-vertical-java]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compilar motor Java para navegador
+        run: mvn -B -q -f java/pom.xml process-classes -DskipTests
+      - name: Verificações dirigidas (sem testes exaustivos)
+        run: |
+          mkdir -p /tmp/classes
+          javac -d /tmp/classes java/src/main/java/com/buracoarcano/GameEngine.java java/src/test/java/com/buracoarcano/ReleaseSmokeTest.java
+          java -cp /tmp/classes com.buracoarcano.ReleaseSmokeTest
+          npm run check
+          npm run build
+      - name: Preparar QA de navegador
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Toque, save, bots, dificuldade e capturas reais
+        run: node tests/browser-release.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: buraco-arcano-web-e-capturas
+          path: |
+            dist/
+            qa/
+          retention-days: 30
