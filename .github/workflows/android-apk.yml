@@ -23,8 +23,8 @@ jobs:
           gradle-version: '8.9'
       - uses: actions/cache@v4
         with:
-          path: ~/.android/debug.keystore
-          key: buraco-arcano-android-debug-signing-v1
+          path: android/.signing/test.keystore
+          key: buraco-arcano-preview-test-signing-v1
       - name: Empacotar jogo offline
         run: |
           npm run check
@@ -36,6 +36,12 @@ jobs:
           log-accepted-android-sdk-licenses: false
       - name: Preparar SDK Android
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Preparar assinatura de teste persistente
+        run: |
+          mkdir -p android/.signing
+          if [ ! -f android/.signing/test.keystore ]; then
+            keytool -genkeypair -noprompt -keystore android/.signing/test.keystore -storetype PKCS12 -storepass android -keypass android -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
       - name: Compilar APK de teste
         working-directory: android
         run: gradle --no-daemon :app:assembleDebug

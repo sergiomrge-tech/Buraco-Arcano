@@ -7,6 +7,6 @@
 - O arraste funciona durante a vez dos bots. Segurar uma carta na lateral por 600 ms muda a página quando a mão tem mais de 13 cartas.
 - A ordem escolhida é salva separadamente do estado de regras Java. É retomada ao reabrir o jogo e preservada nas próximas compras e turnos.
 - Cancelamento do gesto e mudança de tamanho da tela restauram a posição anterior sem modificar cartas.
-- APK de atualização com o mesmo application ID e versionCode 3 (0.2.1).
+- APK de teste paralelo `com.buracoarcano.mobile.preview`, com versionCode 3 (0.2.1), para preservar a instalação e os dados da 0.2.0. A chave da primeira edição não estava no caminho coberto pelo cache; a nova edição usa uma chave em caminho explícito e configuração de assinatura própria.
 
 Validação dirigida por eventos touch do Chromium em 412×915 e 360×800, com capturas reais e cenário de várias páginas. Sem reiniciar os testes exaustivos de combinações.
