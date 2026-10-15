@@ -15,7 +15,15 @@ public final class ActionsMatrixTest {
             GameEngine.Card c = game.stock.get(i);
             if (c.suit == suit && c.rank == rank) {
                 // Troca uma carta da mão por uma do monte, conservando exatamente 104.
-                game.stock.set(i, game.hands[0].remove(game.hands[0].size() - 1));
+                int swap = -1;
+                for (int j = 0; j < game.hands[0].size(); j++) {
+                    GameEngine.Card old = game.hands[0].get(j);
+                    if (old.suit != suit || old.rank < 4 || old.rank > 9) {
+                        swap = j; break;
+                    }
+                }
+                if (swap == -1) swap = 0;
+                game.stock.set(i, game.hands[0].remove(swap));
                 game.hands[0].add(c);
                 return c;
             }

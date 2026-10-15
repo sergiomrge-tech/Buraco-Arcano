@@ -21,7 +21,7 @@ Os arquivos são testes de código individuais, versionados e executados pelo wo
 
 ## Como executar localmente
 
-\`\`\`bash
+```bash
 mvn -B -ntp package -DskipTests
 CP=target/test-classes:target/classes
 java -cp "$CP" com.buracoarcano.GameEngineSmoke
@@ -31,10 +31,10 @@ java -cp "$CP" com.buracoarcano.ScoringAndEndgameTest
 java -cp "$CP" com.buracoarcano.SeededSimulationTest 30 180
 npm test
 npm run test:visual
-\`\`\`
+```
 
-No Windows, substitua \`:\` por \`;\` no classpath. O GitHub Actions publica
-\`qa-java-relatorios\` com logs e \`capturas-buraco-arcano\` com screenshots.
+No Windows, substitua `:` por `;` no classpath. O GitHub Actions publica
+`qa-java-relatorios` com logs e `capturas-buraco-arcano` com screenshots.
 
 **Observações:** aprovação da suíte não equivale a prova matemática das regras completas
 ou a 90% de semelhança visual. Questões regionais de regras (morto, sequência com dois 2,
