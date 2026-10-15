@@ -210,6 +210,13 @@ public final class GameEngine {
             }
         }
         if(deadTaken[team]&&hasClean(team)){finishRound(team);return true;}
+        // Se os dois mortos já foram utilizados ou viraram monte, não há como
+        // recuperar a mão vazia da equipe que ainda não pegou morto.
+        // Encerrar por pontos evita uma rodada irrecuperavelmente travada.
+        if(!deadTaken[team] && (deads[0]==null||deads[0].isEmpty())
+           && (deads[1]==null||deads[1].isEmpty())){
+            finishRound(null);return true;
+        }
         return false;
     }
     private void refillOrEnd() {
