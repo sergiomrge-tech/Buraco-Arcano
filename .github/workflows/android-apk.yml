@@ -1,0 +1,52 @@
+name: Gerar APK Android
+on:
+  push:
+    branches: [release/android-apk]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: buraco-arcano-android-debug-signing-v1
+      - name: Empacotar jogo offline
+        run: |
+          npm run check
+          npm run build
+          node scripts/prepare-android.mjs
+      - name: Preparar SDK Android
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Compilar APK de teste
+        working-directory: android
+        run: gradle --no-daemon :app:assembleDebug
+      - name: Verificar APK, alinhamento e assinatura
+        run: |
+          mkdir -p deliverables
+          cp android/app/build/outputs/apk/debug/app-debug.apk deliverables/Buraco_Arcano_v0.2.0.apk
+          "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -v 4 deliverables/Buraco_Arcano_v0.2.0.apk > deliverables/alinhamento.txt
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs deliverables/Buraco_Arcano_v0.2.0.apk > deliverables/assinatura.txt
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging deliverables/Buraco_Arcano_v0.2.0.apk > deliverables/pacote.txt
+          unzip -t deliverables/Buraco_Arcano_v0.2.0.apk > deliverables/integridade.txt
+          unzip -l deliverables/Buraco_Arcano_v0.2.0.apk | grep 'assets/web/java/engine.js'
+          sha256sum deliverables/Buraco_Arcano_v0.2.0.apk > deliverables/SHA256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Buraco-Arcano-APK-v0.2.0
+          path: deliverables/
+          retention-days: 30

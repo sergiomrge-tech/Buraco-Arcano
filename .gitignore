@@ -7,3 +7,9 @@ tests/server.pid
 java/target/
 dist/
 qa/
+.gradle/
+android/local.properties
+android/app/build/
+android/app/src/main/assets/
+*.apk
+*.keystore
