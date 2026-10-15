@@ -30,6 +30,15 @@ jobs:
             java -cp target/test-classes:target/classes com.buracoarcano.$suite 30 180 2>&1 | tee -a qa-reports/resultados.txt
           done
           echo "SHA: ${GITHUB_SHA}" | tee -a qa-reports/resultados.txt
+      - name: Enumerar cada terno e simular partidas reproduziveis
+        run: java -Dburaco.qaSeed=20261015 -Dburaco.fuzzGames=48 -cp target/test-classes:target/classes com.buracoarcano.CombinatorialQa
+      - name: Salvar CSV individual dos casos combinatorios
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-casos-individuais-java
+          path: reports/qa-combinatorio.csv
+          if-no-files-found: ignore
       - name: Testar regras JS anteriores como regressão
         run: npm test
       - name: Instalar navegador para captura real
