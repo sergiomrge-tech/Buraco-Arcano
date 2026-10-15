@@ -40,3 +40,21 @@
 @media (max-height:600px) and (orientation:landscape){:root{--card-w:clamp(36px,5vw,53px)}.game{min-height:0}.topbar{min-height:38px;padding:0 15px}.brand-glyph{font-size:28px}.brand strong{font-size:15px}.brand small{font-size:6px}.scoreboard{padding:3px 12px;gap:8px;min-width:180px}.score-team span{font-size:6px}.score-team b{font-size:14px}.score-sigil{font-size:15px}.round-button{width:26px;height:26px}.arena{inset:9% 0 20%}.table-outer{inset:9% 12% 5%;padding:12px}.seat .portrait{width:48px;height:50px;border-width:2px}.seat-top .portrait{width:45px;height:45px}.seat-names strong{font-size:9px}.seat-names span{font-size:6px!important}.enemy-hand{display:none}.hand-count{display:none}.deck-zone{gap:8px}.stock-stack,.discard-stack{width:38px;height:53px}.arcane-cardback{font-size:23px}.discard-face{font-size:18px}.deck-middle{font-size:6px}.watermark-circle{font-size:50px;width:130px;height:130px}.meld-label{font-size:7px}.meld-mini{width:18px;height:29px;font-size:9px;margin-left:-8px}.meld-group{min-height:30px}.meld-side{min-height:15%}.bottom-meld{bottom:7%}.top-meld{top:7%}.filigree{font-size:11px}.dead-back{width:22px;height:32px;font-size:16px}.dead-zone small{font-size:6px}.player-tray{height:22%;min-height:0}.player-portrait .portrait{width:45px;height:49px;flex-basis:45px}.player-portrait{margin-bottom:14px}.player-hand{bottom:18px;left:48%;max-width:68vw}.card-corner{font-size:12px}.card-corner small{font-size:11px}.card-center{font-size:21px}.play-card{padding:3px 3px}.play-card.selected{transform:translateY(-16px)}.actions{gap:3px;margin-bottom:18px;width:83px}.action-btn{font-size:8px;padding:6px 5px}.action-btn span{font-size:10px}.micro-info{font-size:7px}.turn-banner{font-size:7px;bottom:-2%;padding:4px 12px}.bottom-decoration{display:none}.bottom-bar{min-height:18px}.story-message{font-size:9px}.bottom-bar button{font-size:8px}}
 @media (orientation:portrait) and (max-width:700px){.game{position:absolute;left:100vw;top:0;width:100dvh;height:100vw;min-height:0;transform:rotate(90deg);transform-origin:top left}.topbar{min-height:0}.arena{inset:10% 0 20%}.player-tray{min-height:0}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+
+/* Consulta de todas as cartas do lixo, obrigatoria na modalidade aberta. */
+.inspect-discard{position:absolute;right:-31px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:28px;height:28px;padding:0;background:radial-gradient(#73522c,#2a1d1b);border:1.5px solid #ecc37c;border-radius:50%;color:#ffebbd;font:26px Georgia,serif;box-shadow:0 2px 6px #000a;z-index:13}
+.inspect-discard:hover{filter:brightness(1.3)}
+.discard-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(45px,1fr));gap:7px;padding:11px;margin:12px 0;max-height:230px;overflow:auto;border-radius:10px;background:#071c2699;border:1px solid #a47b4c}
+.discard-item{display:flex;align-items:center;flex-direction:column;gap:4px}.discard-order{font:600 10px Cinzel,serif;color:#e4be86}.inspect-card{height:62px;width:42px;display:grid;place-items:center;background:linear-gradient(135deg,#fff5e3,#d6c29a);color:#223144;border:2px solid #fdf5df;border-radius:5px;box-shadow:0 2px 4px #0009;font:800 18px Cinzel,serif}.inspect-card.red{color:#b3313d}
+@media (max-height:600px) and (orientation:landscape){.inspect-discard{right:-22px;width:21px;height:21px;font-size:21px}}
+/* Pequenos relevos e iluminacao que mantem a mesa legivel sobre o feltro. */
+.table-outer{background:
+  radial-gradient(ellipse at 50% 50%,transparent 67%,#110807 73%,#f6d18b73 75%,transparent 79%),
+  repeating-linear-gradient(12deg,#5e3421 0px,#713e25 7px,#854926 12px,#63351e 21px,#4b271a 32px,#814525 36px),
+  linear-gradient(145deg,#deb66f,#2b130f)}
+.table-felt{background:
+  radial-gradient(ellipse at 54% 46%,#266b72ed 0%,#15535b 41%,#0b3941 79%,#061c25 100%),
+  repeating-radial-gradient(circle at 10% 90%,#fdf4bc08 0px,#09171d1c 2px,transparent 4px)}
+.table-felt:before{box-shadow:inset 0 0 0 3px #e7c98b1a,inset 0 0 0 9px #061d2b5e}
+.sconce{animation:glimmer 3.4s ease-in-out infinite alternate}
+@keyframes glimmer{from{opacity:.72;filter:brightness(.92)}to{opacity:1;filter:brightness(1.25)}}
