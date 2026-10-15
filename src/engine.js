@@ -125,8 +125,9 @@ export class BuracoGame{
     const combined=toExtend?[...this.melds[team][groupIndex].cards,...picked]:picked;
     const run=isValidRun(combined);
     if(!run){this.log("Sequência inválida: são necessárias 3+ cartas do mesmo naipe em ordem, com no máximo um 2 como curinga.");return false;}
-    if(!this.deadTaken[team]&&hand.length===picked.length&&!this.deads.some(Boolean)&&this.melds[team].every(m=>m.cards.length<7)&&combined.length<7){
-      this.log("É necessário formar uma canastra limpa antes da batida final.");return false;
+    const cleanAfter = this.hasClean(team) || (combined.length>=7&&run.clean);
+    if(this.deadTaken[team]&&hand.length===picked.length&&!cleanAfter){
+      this.log("Guarde ao menos uma carta até sua dupla conseguir uma canastra limpa.");return false;
     }
     this.hands[player]=hand.filter(c=>!unique.includes(c.id));
     if(toExtend)this.melds[team][groupIndex].cards=run.ordered;
