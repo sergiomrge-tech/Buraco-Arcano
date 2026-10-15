@@ -64,6 +64,21 @@ public final class DeadPileAndExitTest {
             TestSupport.check(g.stockEnded&&g.phase.equals("end"),"rodada não acabou");cases++;
             TestSupport.invariant(g,"fim do monte");
         }
+        // Regressão: um jogador esvazia a mão depois de os dois mortos
+        // terem sido consumidos como monte. Antes o bot ficava travado.
+        for(int seed=500;seed<550;seed++){
+            GameEngine g=TestSupport.game(seed,"normal");
+            for(int d=0;d<2;d++){
+                g.hands[3].addAll(g.deads[d]);g.deads[d]=null;
+            }
+            g.stock.addAll(g.hands[0]);g.hands[0].clear();
+            TestSupport.check(g.buyStock(0),"compra para testar mão sem mortos");cases++;
+            String card=g.hands[0].get(0).id;
+            TestSupport.check(g.discard(0,card),"descarte sem morto");cases++;
+            TestSupport.check(g.stockEnded&&g.phase.equals("end"),
+                "mão vazia sem mortos deve encerrar rodada por pontos");cases++;
+            TestSupport.invariant(g,"regressão sem mortos");
+        }
         TestSupport.okay("Morto, canastra obrigatória, batida e monte esgotado",cases);
         return cases;
     }
